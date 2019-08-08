@@ -25,16 +25,12 @@ export default class App extends React.Component<AppProps, AppState> {
     this.setState({
       listItems: [
         {
-          icon: 'Ribbon',
-          primaryText: 'Achieve more with Office integration'
+          icon: 'Search',
+          primaryText: 'Find available rooms in Ad Astra'
         },
         {
-          icon: 'Unlock',
-          primaryText: 'Unlock features and functionality'
-        },
-        {
-          icon: 'Design',
-          primaryText: 'Create and visualize like a pro'
+          icon: 'DateTime',
+          primaryText: 'Reserve room(s) in Ad Astra'
         }
       ]
     });
@@ -65,7 +61,7 @@ export default class App extends React.Component<AppProps, AppState> {
     return (
       <div className='ms-welcome'>
         <Header logo='assets/logo-filled.png' title={this.props.title} message='Welcome' />
-        <HeroList message='Discover what Office Add-ins can do for you today!' items={this.state.listItems}>
+        <HeroList message='Discover what Ad Astra for Outlook can do for you!' items={this.state.listItems}>
           <p className='ms-font-l'>Modify the source files, then click <b>Run</b>.</p>
           <Button className='ms-welcome__action' buttonType={ButtonType.hero} iconProps={{ iconName: 'ChevronRight' }} onClick={this.click}>Run</Button>
         </HeroList>
