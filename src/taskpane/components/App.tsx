@@ -48,7 +48,6 @@ export default class App extends React.Component<AppProps, AppState> {
       <div className='ms-welcome'>
         <Header logo='assets/logo-filled.png' title={this.props.title} message='Welcome' />
         <HeroList message='Discover what Ad Astra for Outlook can do for you!' items={this.state.listItems}>
-          <p className='ms-font-l'>Modify the source files, then click <b>Run</b>.</p>
           <Button className='ms-welcome__action' buttonType={ButtonType.hero} onClick={this.click}>Get Started</Button>
         </HeroList>
       </div>
