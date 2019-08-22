@@ -43,6 +43,19 @@ export default class App extends React.Component<AppProps, AppState> {
   }
 
   renderIntro() {
+    return (
+      <div className='ms-welcome'>
+        <Header logo='assets/logo-filled.png' title={this.props.title} message='Welcome' />
+        <HeroList message='Discover what Ad Astra for Outlook can do for you!' items={this.state.listItems}>
+          <p className='ms-font-l'>Modify the source files, then click <b>Run</b>.</p>
+          <Button className='ms-welcome__action' buttonType={ButtonType.hero} onClick={this.click}>Get Started</Button>
+        </HeroList>
+      </div>
+    );
+  }
+  
+  render() {
+
     const {
       title,
       isOfficeInitialized,
@@ -59,25 +72,11 @@ export default class App extends React.Component<AppProps, AppState> {
     }
 
     if (this.state.showIntro) {
+      return this.renderIntro();
+    } else {
       return (
-        <div className='ms-welcome'>
-          <Header logo='assets/logo-filled.png' title={this.props.title} message='Welcome' />
-          <HeroList message='Discover what Ad Astra for Outlook can do for you!' items={this.state.listItems}>
-            <p className='ms-font-l'>Modify the source files, then click <b>Run</b>.</p>
-            <Button className='ms-welcome__action' buttonType={ButtonType.hero} onClick={this.click}>Get Started</Button>
-          </HeroList>
-        </div>
+        <div>Room finder will go here</div>
       );
     }
-
-    return (
-      <div>
-        Replace this with content
-      </div>
-    );
-  }
-  
-  render() {
-    return this.renderIntro();
   }
 }
