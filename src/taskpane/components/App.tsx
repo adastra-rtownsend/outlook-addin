@@ -11,13 +11,15 @@ export interface AppProps {
 
 export interface AppState {
   listItems: HeroListItem[];
+  showIntro: boolean;
 }
 
 export default class App extends React.Component<AppProps, AppState> {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      listItems: []
+      listItems: [],
+      showIntro: true,
     };
   }
 
@@ -37,12 +39,10 @@ export default class App extends React.Component<AppProps, AppState> {
   }
 
   click = async () => {
-    /**
-    * Insert your Outlook code here
-    */
+    this.setState({ showIntro: false });
   }
 
-  render() {
+  renderIntro() {
     const {
       title,
       isOfficeInitialized,
@@ -58,14 +58,26 @@ export default class App extends React.Component<AppProps, AppState> {
       );
     }
 
+    if (this.state.showIntro) {
+      return (
+        <div className='ms-welcome'>
+          <Header logo='assets/logo-filled.png' title={this.props.title} message='Welcome' />
+          <HeroList message='Discover what Ad Astra for Outlook can do for you!' items={this.state.listItems}>
+            <p className='ms-font-l'>Modify the source files, then click <b>Run</b>.</p>
+            <Button className='ms-welcome__action' buttonType={ButtonType.hero} onClick={this.click}>Get Started</Button>
+          </HeroList>
+        </div>
+      );
+    }
+
     return (
-      <div className='ms-welcome'>
-        <Header logo='assets/logo-filled.png' title={this.props.title} message='Welcome' />
-        <HeroList message='Discover what Ad Astra for Outlook can do for you!' items={this.state.listItems}>
-          <p className='ms-font-l'>Modify the source files, then click <b>Run</b>.</p>
-          <Button className='ms-welcome__action' buttonType={ButtonType.hero} iconProps={{ iconName: 'ChevronRight' }} onClick={this.click}>Run</Button>
-        </HeroList>
+      <div>
+        Replace this with content
       </div>
     );
+  }
+  
+  render() {
+    return this.renderIntro();
   }
 }

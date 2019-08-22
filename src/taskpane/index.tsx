@@ -9,7 +9,7 @@ initializeIcons();
 
 let isOfficeInitialized = false;
 
-const title = 'Contoso Task Pane Add-in';
+const title = 'Ad Astra Task Pane Add-in';
 
 const render = (Component) => {
     ReactDOM.render(
