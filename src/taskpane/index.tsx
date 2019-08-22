@@ -20,11 +20,11 @@ const render = (Component) => {
     );
 };
 
-/* Render application after Office initializes */
-Office.initialize = () => {
+Office.onReady(function(info) {
+    console.log(`Office.js is now ready in ${info.host} on ${info.platform}`);
     isOfficeInitialized = true;
     render(App);
-};
+});
 
 /* Initial render showing a progress bar */
 render(App);
