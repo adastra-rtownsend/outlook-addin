@@ -3,6 +3,7 @@ import { Button, ButtonType } from 'office-ui-fabric-react';
 import Header from './Header';
 import HeroList, { HeroListItem } from './HeroList';
 import Progress from './Progress';
+import RoomFinder from './RoomFinder';
 
 export interface AppProps {
   title: string;
@@ -75,7 +76,7 @@ export default class App extends React.Component<AppProps, AppState> {
       return this.renderIntro();
     } else {
       return (
-        <div>Room finder will go here</div>
+        <RoomFinder></RoomFinder>
       );
     }
   }
