@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { css } from 'office-ui-fabric-react/lib/Utilities';
 import { FocusZone, FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { Dropdown, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
@@ -41,36 +40,6 @@ export default class ListScrollingExample extends React.Component<IListScrolling
 
     return (
       <FocusZone direction={FocusZoneDirection.vertical}>
-        <div>
-          <DefaultButton onClick={this._scrollRelative(-10)}>-10</DefaultButton>
-          <DefaultButton onClick={this._scrollRelative(-1)}>-1</DefaultButton>
-          <DefaultButton onClick={this._scrollRelative(1)}>+1</DefaultButton>
-          <DefaultButton onClick={this._scrollRelative(10)}>+10</DefaultButton>
-        </div>
-        <Dropdown
-          placeholder="Select an Option"
-          label="Scroll To Mode:"
-          ariaLabel="Scroll To Mode"
-          defaultSelectedKey={'auto'}
-          options={[
-            { key: 'auto', text: 'Auto' },
-            { key: 'top', text: 'Top' },
-            { key: 'bottom', text: 'Bottom' },
-            { key: 'center', text: 'Center' }
-          ]}
-          onChange={this._onDropdownChange}
-        />
-        <div>
-          Scroll item index:
-          <TextField value={this.state.selectedIndex.toString(10)} onChange={this._onChangeText} />
-        </div>
-        <div>
-          <Checkbox
-            label="Show index of the first item in view when unmounting"
-            checked={this.state.showItemIndexInView}
-            onChange={this._onShowItemIndexInViewChanged}
-          />
-        </div>
         <div className='scroll-container' data-is-scrollable={true}>
           <List ref={this._resolveList} items={items} getPageHeight={this._getPageHeight} onRenderCell={this._onRenderCell} />
         </div>
