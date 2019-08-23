@@ -6,7 +6,6 @@ import { Dropdown, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { List, ScrollToMode } from 'office-ui-fabric-react/lib/List';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
-import * as styles from './List.Scrolling.Example.scss';
 
 export type IExampleItem = { name: string };
 
@@ -24,7 +23,7 @@ const evenItemHeight = 25;
 const oddItemHeight = 50;
 const numberOfItemsOnPage = 10;
 
-export class ListScrollingExample extends React.Component<IListScrollingExampleProps, IListScrollingExampleState> {
+export default class ListScrollingExample extends React.Component<IListScrollingExampleProps, IListScrollingExampleState> {
   private _list: List<IExampleItem>;
 
   constructor(props: IListScrollingExampleProps) {
@@ -72,7 +71,7 @@ export class ListScrollingExample extends React.Component<IListScrollingExampleP
             onChange={this._onShowItemIndexInViewChanged}
           />
         </div>
-        <div className={styles.container} data-is-scrollable={true}>
+        <div className='scroll-container' data-is-scrollable={true}>
           <List ref={this._resolveList} items={items} getPageHeight={this._getPageHeight} onRenderCell={this._onRenderCell} />
         </div>
       </FocusZone>
@@ -124,7 +123,7 @@ export class ListScrollingExample extends React.Component<IListScrollingExampleP
   private _onRenderCell = (item: IExampleItem, index: number): JSX.Element => {
     return (
       <div data-is-focusable={true}>
-        <div className={css(styles.itemContent, index % 2 === 0 ? styles.itemContentEven : styles.itemContentOdd)}>
+        <div>
           {index} &nbsp; {item.name}
         </div>
       </div>
