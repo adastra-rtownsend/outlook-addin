@@ -6,13 +6,15 @@ import { List, ScrollToMode } from 'office-ui-fabric-react/lib/List';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
 
+import { DetailedRoomButton } from './DetailedRoomButton';
+
 export type IExampleItem = { name: string };
 
-export interface IListScrollingExampleProps {
+export interface IRoomListProps {
   items: IExampleItem[];
 }
 
-export interface IListScrollingExampleState {
+export interface IRoomListState {
   selectedIndex: number;
   scrollToMode: ScrollToMode;
   showItemIndexInView: boolean;
@@ -22,10 +24,10 @@ const evenItemHeight = 25;
 const oddItemHeight = 50;
 const numberOfItemsOnPage = 10;
 
-export default class ListScrollingExample extends React.Component<IListScrollingExampleProps, IListScrollingExampleState> {
+export default class RoomList extends React.Component<IRoomListProps, IRoomListState> {
   private _list: List<IExampleItem>;
 
-  constructor(props: IListScrollingExampleProps) {
+  constructor(props: IRoomListProps) {
     super(props);
 
     this.state = {
@@ -92,6 +94,7 @@ export default class ListScrollingExample extends React.Component<IListScrolling
   private _onRenderCell = (item: IExampleItem, index: number): JSX.Element => {
     return (
       <div data-is-focusable={true}>
+        {/* <DetailedRoomButton/> */}
         <div>
           {index} &nbsp; {item.name}
         </div>
