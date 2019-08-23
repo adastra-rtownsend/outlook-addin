@@ -1,31 +1,22 @@
 import * as React from 'react';
+import { IPersonaSharedProps, Persona, PersonaSize, PersonaPresence, PersonaInitialsColor } from 'office-ui-fabric-react/lib/Persona';
+import { ActionButton } from 'office-ui-fabric-react';
+import { Icon } from 'office-ui-fabric-react/lib/Icon';
 
-export interface DetailedRoomButtonProps {
-  roomName: string;
-  }
-
-export interface DetailedRoomButtonState { 
-}
-
-export default class DetailedRoomButton extends React.Component<DetailedRoomButtonProps, DetailedRoomButtonState> {
-  constructor(props, context) {
-    super(props, context);
-  }
-
-  componentDidMount() {
-  }
+export const DetailedRoomButton: React.FunctionComponent = () => {
+  const examplePersona: IPersonaSharedProps = {
+    showUnknownPersonaCoin: true,
+    text: '1st Floor - Engineering Conference Room',
+    secondaryText: 'Available',
+    tertiaryText: 'Not Available',
+    showSecondaryText: true
+  };
   
-  render() {
-
-    const {
-      roomName,
-    } = this.props;
-
-    return (
-      <div>
-        This is a room: {roomName}
-      </div>
-    );
-  }
-  
-}
+  return (
+    <ActionButton allowDisabledFocus style={{ paddingLeft: '16px', paddingRight: '16px', 
+                  paddingBottom: '9px', paddingTop: '9px', height: 'auto'}}>
+      <Persona {...examplePersona} size={PersonaSize.size32} presence={PersonaPresence.none} 
+          onRenderInitials ={() => { return (<Icon iconName="Room"/>) } />
+    </ActionButton>
+  );
+};

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FocusZone, FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
 import { List } from 'office-ui-fabric-react/lib/List';
 
-import DetailedRoomButton from './DetailedRoomButton';
+import { DetailedRoomButton } from './DetailedRoomButton';
 
 export type IExampleItem = { name: string };
 
