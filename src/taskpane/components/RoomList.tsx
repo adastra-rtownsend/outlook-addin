@@ -1,12 +1,8 @@
 import * as React from 'react';
 import { FocusZone, FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
-import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
-import { Dropdown, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
-import { List, ScrollToMode } from 'office-ui-fabric-react/lib/List';
-import { TextField } from 'office-ui-fabric-react/lib/TextField';
-import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
+import { List } from 'office-ui-fabric-react/lib/List';
 
-import { DetailedRoomButton } from './DetailedRoomButton';
+import DetailedRoomButton from './DetailedRoomButton';
 
 export type IExampleItem = { name: string };
 
@@ -15,9 +11,6 @@ export interface IRoomListProps {
 }
 
 export interface IRoomListState {
-  selectedIndex: number;
-  scrollToMode: ScrollToMode;
-  showItemIndexInView: boolean;
 }
 
 const evenItemHeight = 25;
@@ -31,9 +24,6 @@ export default class RoomList extends React.Component<IRoomListProps, IRoomListS
     super(props);
 
     this.state = {
-      selectedIndex: 0,
-      scrollToMode: ScrollToMode.auto,
-      showItemIndexInView: false
     };
   }
 
@@ -49,15 +39,6 @@ export default class RoomList extends React.Component<IRoomListProps, IRoomListS
     );
   }
 
-  public componentWillUnmount() {
-    if (this.state.showItemIndexInView) {
-      const itemIndexInView = this._list!.getStartItemIndexInView(
-        idx => (idx % 2 === 0 ? evenItemHeight : oddItemHeight) /* measureItem */
-      );
-      alert('unmounting, getting first item index that was in view: ' + itemIndexInView);
-    }
-  }
-
   private _getPageHeight(idx: number): number {
     let h = 0;
     for (let i = idx; i < idx + numberOfItemsOnPage; ++i) {
@@ -68,67 +49,16 @@ export default class RoomList extends React.Component<IRoomListProps, IRoomListS
     return h;
   }
 
-  private _onChangeText = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, value: string): void => {
-    this._scroll(parseInt(value, 10) || 0, this.state.scrollToMode);
-  };
-
-  private _onDropdownChange = (event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) => {
-    let scrollMode = this.state.scrollToMode;
-    switch (option.key) {
-      case 'auto':
-        scrollMode = ScrollToMode.auto;
-        break;
-      case 'top':
-        scrollMode = ScrollToMode.top;
-        break;
-      case 'bottom':
-        scrollMode = ScrollToMode.bottom;
-        break;
-      case 'center':
-        scrollMode = ScrollToMode.center;
-        break;
-    }
-    this._scroll(this.state.selectedIndex, scrollMode);
-  };
-
   private _onRenderCell = (item: IExampleItem, index: number): JSX.Element => {
     return (
+      
       <div data-is-focusable={true}>
-        {/* <DetailedRoomButton/> */}
-        <div>
-          {index} &nbsp; {item.name}
-        </div>
+        <DetailedRoomButton roomName={index + " " + item.name}/>
       </div>
-    );
-  };
-
-  private _scrollRelative = (delta: number): (() => void) => {
-    return (): void => {
-      this._scroll(this.state.selectedIndex + delta, this.state.scrollToMode);
-    };
-  };
-
-  private _scroll = (index: number, scrollToMode: ScrollToMode): void => {
-    const updatedSelectedIndex = Math.min(Math.max(index, 0), this.props.items.length - 1);
-
-    this.setState(
-      {
-        selectedIndex: updatedSelectedIndex,
-        scrollToMode: scrollToMode
-      },
-      () => {
-        this._list.scrollToIndex(updatedSelectedIndex, idx => (idx % 2 === 0 ? evenItemHeight : oddItemHeight), scrollToMode);
-      }
     );
   };
 
   private _resolveList = (list: List<IExampleItem>): void => {
     this._list = list;
-  };
-
-  private _onShowItemIndexInViewChanged = (event: React.FormEvent<HTMLInputElement>, checked: boolean): void => {
-    this.setState({
-      showItemIndexInView: checked
-    });
   };
 }

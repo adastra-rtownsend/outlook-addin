@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 export interface DetailedRoomButtonProps {
-}
+  roomName: string;
+  }
 
 export interface DetailedRoomButtonState { 
 }
@@ -15,10 +16,16 @@ export default class DetailedRoomButton extends React.Component<DetailedRoomButt
   }
   
   render() {
+
+    const {
+      roomName,
+    } = this.props;
+
     return (
       <div>
-        This is a room
+        This is a room: {roomName}
       </div>
     );
   }
+  
 }

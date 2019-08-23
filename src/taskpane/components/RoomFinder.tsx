@@ -58,24 +58,28 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
   render() {
     return (
       <div>
-        <div className="ms-SearchBoxExample">
-          <SearchBox
-            placeholder="Search by Ad Astra room name"
-            onSearch={newValue => console.log('value is ' + newValue)}
-            onFocus={() => console.log('onFocus called')}
-            onBlur={() => console.log('onBlur called')}
-            onChange={() => console.log('onChange called')}
-          />
+        <div style={{ paddingLeft: '16px', paddingRight: '16px', paddingBottom: '10px', borderBottomWidth: '1px',
+                       borderColor: 'rgba(237, 235, 233, 1)', borderBottomStyle: 'solid'}}>        
+          <div className="ms-SearchBoxExample" style={{borderColor: 'rgba(237, 235, 233, 1)'}}>
+            <SearchBox
+              placeholder="Search by Ad Astra room name"
+              onSearch={newValue => console.log('value is ' + newValue)}
+              onFocus={() => console.log('onFocus called')}
+              onBlur={() => console.log('onBlur called')}
+              onChange={() => console.log('onChange called')}
+            />
+          </div>
+          <div style={{ marginTop: '13px', marginBottom: '5px' }} > 
+              <Toggle
+                defaultChecked={true}
+                label="Only available rooms"
+                inlineLabel={true}
+                onFocus={() => console.log('onFocus called')}
+                onBlur={() => console.log('onBlur called')}
+                onChange={() => console.log('onChange called')}
+              />
+          </div>
         </div>
-        <Toggle
-          defaultChecked={true}
-          label=""
-          onText="Only available rooms"
-          offText="Only available rooms"
-          onFocus={() => console.log('onFocus called')}
-          onBlur={() => console.log('onBlur called')}
-          onChange={() => console.log('onChange called')}
-        />
         <RoomList items={_cachedItems} />
 
         <Button className='ms-welcome__action'  onClick={this.click}>Refresh</Button>

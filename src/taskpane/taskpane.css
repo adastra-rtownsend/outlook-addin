@@ -75,6 +75,14 @@
   cursor: pointer;
 }
 
+.ms-SearchBox {
+  border-color: #edebe9 !important;
+}
+
+.ms-SearchBox-IconContainer {
+    border-color: #edebe9;
+  }
+  
 b {
     font-weight: bold;
 }
