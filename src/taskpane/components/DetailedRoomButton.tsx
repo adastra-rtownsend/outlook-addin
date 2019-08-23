@@ -16,7 +16,30 @@ export const DetailedRoomButton: React.FunctionComponent = () => {
     <ActionButton allowDisabledFocus style={{ paddingLeft: '16px', paddingRight: '16px', 
                   paddingBottom: '9px', paddingTop: '9px', height: 'auto'}}>
       <Persona {...examplePersona} size={PersonaSize.size32} presence={PersonaPresence.none} 
-          onRenderInitials ={() => { return (<Icon iconName="Room"/>) } />
+          onRenderSecondaryText={_onRenderSecondaryText}
+          onRenderInitials ={_onRenderInitials} />
     </ActionButton>
   );
+
+  function _onRenderInitials(props: IPersonaProps): JSX.Element {
+    return (
+      <Icon iconName="Room"/>
+    );
+  };
+
+  function _onRenderSecondaryText(props: IPersonaProps): JSX.Element {
+    return (
+      <div>
+        <span className='availibity-text'>
+          <Icon iconName="Clock" styles={{ color: '0xff0000', root: { marginRight: 5 } }} />
+          {props.secondaryText}
+        </span>
+        <span>
+          <Icon iconName="Contact" styles={{ root: { marginRight: 5 } }} />
+          <span>34</span> 
+        </span>
+      </div>
+    );
+  };
+
 };
