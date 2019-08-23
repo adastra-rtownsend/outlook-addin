@@ -3,6 +3,12 @@ import { Button } from 'office-ui-fabric-react';
 import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 
+import RoomList from './RoomList';
+import { createListItems } from '../../utilities/exampleData';
+
+// for now we are using fake data items in the scrolling room grid
+const _cachedItems = createListItems(5000);
+
 export interface AppProps {
 }
 
@@ -11,7 +17,7 @@ export interface AppState {
   endTime: Date;
 }
 
-export default class App extends React.Component<AppProps, AppState> {
+export default class RoomFinder extends React.Component<AppProps, AppState> {
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -70,7 +76,7 @@ export default class App extends React.Component<AppProps, AppState> {
           onBlur={() => console.log('onBlur called')}
           onChange={() => console.log('onChange called')}
         />
-        <div>Place holder for scrolling list of compound buttons (rooms)</div>
+        <RoomList items={_cachedItems} />
 
         <Button className='ms-welcome__action'  onClick={this.click}>Refresh</Button>
         <div>Here is what I pulled of invite: {JSON.stringify(this.state)} </div>
