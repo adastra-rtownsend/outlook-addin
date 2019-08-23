@@ -13,7 +13,7 @@ export const DetailedRoomButton: React.FunctionComponent = () => {
   };
   
   return (
-    <ActionButton allowDisabledFocus style={{ paddingLeft: '16px', paddingRight: '16px', 
+    <ActionButton allowDisabledFocus onClick={() => _addLocation(examplePersona.text)} style={{ paddingLeft: '16px', paddingRight: '16px', 
                   paddingBottom: '9px', paddingTop: '9px', height: 'auto'}}>
       <Persona {...examplePersona} size={PersonaSize.size32} presence={PersonaPresence.none} 
           onRenderSecondaryText={_onRenderSecondaryText}
@@ -40,6 +40,15 @@ export const DetailedRoomButton: React.FunctionComponent = () => {
         </span>
       </div>
     );
-  };
+  }; 
+};
 
+function _addLocation(roomName): void {  
+  Office.context.mailbox.item.location.setAsync(roomName, function (asyncResult) {
+    if (asyncResult.status == Office.AsyncResultStatus.Failed) {
+        console.log("Error written location in outlook : " + asyncResult.error.message);
+    } else {
+        console.log("Location written in outlook");
+    }
+  });
 };
