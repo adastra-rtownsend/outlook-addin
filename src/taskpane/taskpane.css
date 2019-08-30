@@ -98,7 +98,12 @@ b {
     background: #0078d4;
 }
 
-.availibity-text {
+.available-text {
     color: #107c10;
+    padding-right: 6px;
+}
+
+.unavailable-text {
+    color: #e81123;
     padding-right: 6px;
 }

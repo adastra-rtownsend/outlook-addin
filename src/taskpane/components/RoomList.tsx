@@ -4,10 +4,11 @@ import { List } from 'office-ui-fabric-react/lib/List';
 
 import { DetailedRoomButton } from './DetailedRoomButton';
 
-export type IExampleItem = { name: string };
+export type IExampleItem = { roomName: string };
 
 export interface IRoomListProps {
   items: IExampleItem[];
+  showUnavailable: boolean;
 }
 
 export interface IRoomListState {
@@ -28,7 +29,11 @@ export default class RoomList extends React.Component<IRoomListProps, IRoomListS
   }
 
   public render() {
-    const { items } = this.props;
+    const { items, showUnavailable } = this.props;
+
+    if (!showUnavailable) {
+      items = items.filter(item => item.available == 'true');
+    }
 
     return (
       <FocusZone direction={FocusZoneDirection.vertical}>
@@ -49,11 +54,11 @@ export default class RoomList extends React.Component<IRoomListProps, IRoomListS
     return h;
   }
 
-  private _onRenderCell = (item: IExampleItem, index: number): JSX.Element => {
+  private _onRenderCell = (item: IExampleItem): JSX.Element => {
     return (
       
       <div data-is-focusable={true}>
-        <DetailedRoomButton roomName={index + " " + item.name}/>
+        <DetailedRoomButton roomInfo={item} />
       </div>
     );
   };

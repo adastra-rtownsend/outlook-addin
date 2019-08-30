@@ -1,38 +1,48 @@
 import * as React from 'react';
-import { IPersonaSharedProps, Persona, PersonaSize, PersonaPresence, PersonaInitialsColor } from 'office-ui-fabric-react/lib/Persona';
+import { IPersonaSharedProps, Persona, PersonaSize, PersonaPresence } from 'office-ui-fabric-react/lib/Persona';
 import { ActionButton } from 'office-ui-fabric-react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 
-export const DetailedRoomButton: React.FunctionComponent = () => {
-  const examplePersona: IPersonaSharedProps = {
+export const DetailedRoomButton: React.FunctionComponent = ({roomInfo}) => {
+  const roomPersona: IPersonaSharedProps = {
     showUnknownPersonaCoin: true,
-    text: '1st Floor - Engineering Conference Room',
-    secondaryText: 'Available',
-    tertiaryText: 'Not Available',
-    showSecondaryText: true
+    available: 'true' === (roomInfo.available),
+    text: roomInfo.roomName,
+    showSecondaryText: true,    
   };
   
   return (
-    <ActionButton allowDisabledFocus onClick={() => _addLocation(examplePersona.text)} style={{ paddingLeft: '16px', paddingRight: '16px', 
+    <ActionButton allowDisabledFocus onClick={() => _addLocation(roomPersona.text)} style={{ paddingLeft: '16px', paddingRight: '16px', 
                   paddingBottom: '9px', paddingTop: '9px', height: 'auto'}}>
-      <Persona {...examplePersona} size={PersonaSize.size32} presence={PersonaPresence.none} 
+      <Persona {...roomPersona} size={PersonaSize.size32} presence={PersonaPresence.none} 
           onRenderSecondaryText={_onRenderSecondaryText}
           onRenderInitials ={_onRenderInitials} />
     </ActionButton>
   );
 
-  function _onRenderInitials(props: IPersonaProps): JSX.Element {
+  function _onRenderInitials(): JSX.Element {
     return (
       <Icon iconName="Room"/>
     );
   };
 
-  function _onRenderSecondaryText(props: IPersonaProps): JSX.Element {
+  function _onRenderSecondaryText(props: IPersonaSharedProps): JSX.Element {
+
+    let clockIcon = 'Clock';
+    let text = 'Available';
+    let style = 'available-text';
+
+    if (props.available === false) {
+      clockIcon = 'CircleStopSolid';
+      text = 'Unavailable';
+      style = 'unavailable-text';
+    }
+
     return (
       <div>
-        <span className='availibity-text'>
-          <Icon iconName="Clock" styles={{ color: '0xff0000', root: { marginRight: 5 } }} />
-          {props.secondaryText}
+        <span className={style}>
+          <Icon iconName={clockIcon} styles={{ root: { marginRight: 5 } }} />
+          {text}
         </span>
         <span>
           <Icon iconName="Contact" styles={{ root: { marginRight: 5 } }} />

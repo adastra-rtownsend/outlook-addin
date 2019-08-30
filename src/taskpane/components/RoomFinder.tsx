@@ -85,7 +85,7 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
               />
           </div>
         </div>
-        <RoomList items={_cachedItems} showUnavailable={'true'} />
+        <RoomList items={_cachedItems} showUnavailable={this.state.showUnavailable} />
 
         <Button className='ms-welcome__action'  onClick={this.click}>Refresh</Button>
         <div>Here is what I pulled of invite: {JSON.stringify(this.state)} </div>
