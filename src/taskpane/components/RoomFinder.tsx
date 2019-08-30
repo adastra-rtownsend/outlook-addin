@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DefaultButton } from 'office-ui-fabric-react';
+// import { DefaultButton } from 'office-ui-fabric-react';
 import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 
@@ -87,8 +87,8 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
         </div>
         <RoomList items={_cachedItems} showUnavailable={this.state.showUnavailable} />
 
-        <DefaultButton className='ms-welcome__action'  onClick={this.click} text="Refresh"/>
-        <div>Here is what I pulled of invite: {JSON.stringify(this.state)} </div>
+        {/* <DefaultButton className='ms-welcome__action'  onClick={this.click} text="Refresh"/>
+        <div>Here is what I pulled of invite: {JSON.stringify(this.state)} </div> */}
       </div>
 );
   }
