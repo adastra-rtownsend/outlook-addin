@@ -15,6 +15,7 @@ export interface AppProps {
 export interface AppState { 
   startTime: Date;
   endTime: Date;
+  showUnavailable: boolean;
 }
 
 export default class RoomFinder extends React.Component<AppProps, AppState> {
@@ -23,6 +24,7 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
     this.state = {
       startTime: null,
       endTime: null,
+      showUnavailable: false,
     };
   }
 
@@ -44,7 +46,6 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
   }
 
   click = async () => {
-
     var item = Office.context.mailbox.item;
     Promise.all([this.makePromise(item.start), this.makePromise(item.end)])
       .then(function(values) {
@@ -53,8 +54,12 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
       .catch(function(error) {
         console.log(error);
       });
-  }
+  };
   
+  onToggleChange = (ev: React.MouseEvent<HTMLElement>, checked: boolean) => {
+    this.setState({showUnavailable: checked});
+  };
+
   render() {
     return (
       <div>
@@ -71,16 +76,16 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
           </div>
           <div style={{ marginTop: '13px', marginBottom: '5px' }} > 
               <Toggle
-                defaultChecked={true}
+                defaultChecked={this.state.showUnavailable}
                 label="Only available rooms"
                 inlineLabel={true}
                 onFocus={() => console.log('onFocus called')}
                 onBlur={() => console.log('onBlur called')}
-                onChange={() => console.log('onChange called')}
+                onChange={this.onToggleChange}
               />
           </div>
         </div>
-        <RoomList items={_cachedItems} />
+        <RoomList items={_cachedItems} showUnavailable={'true'} />
 
         <Button className='ms-welcome__action'  onClick={this.click}>Refresh</Button>
         <div>Here is what I pulled of invite: {JSON.stringify(this.state)} </div>
