@@ -28,7 +28,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://immense-savannah-28380.herokuapp.com/taskpane.html"/>
+        <SourceLocation DefaultValue="https://astra-look.surge.sh/taskpane.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
