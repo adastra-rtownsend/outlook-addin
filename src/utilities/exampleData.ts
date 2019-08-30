@@ -23,6 +23,7 @@ export function createListItems(count: number, startIndex: number = 0): IExample
       key: 'item-' + (index + startIndex) + (item === undefined ? '-empty' : '-not empty'),
       roomName: _randWord(DATA.roomNames),
       available: 'true' ===_randWord(DATA.available),
+      capacity: _randNumber(4, 24)
     };
   });
 };
@@ -30,4 +31,10 @@ export function createListItems(count: number, startIndex: number = 0): IExample
 function _randWord(array: string[]): string {
   const index = Math.floor(Math.random() * array.length);
   return array[index];
+};
+
+function _randNumber(min: number, max: number): number {
+  let range = max - min;
+  const number = Math.floor(min + (Math.random() * range));
+  return number;
 };

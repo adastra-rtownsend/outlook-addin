@@ -5,7 +5,8 @@ import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { IExampleItem } from '../../utilities/exampleData';
 
 export interface IRoomInfoProps extends IPersonaSharedProps {
-  available: boolean
+  available: boolean, 
+  capacity: number
 }
 
 interface IRoomButtonProps {
@@ -18,6 +19,7 @@ export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
     text: props.roomInfo.roomName,
     showSecondaryText: true,
     available: (true === props.roomInfo.available),
+    capacity: props.roomInfo.capacity,
   };
   
   return (
@@ -55,7 +57,7 @@ export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
         </span>
         <span>
           <Icon iconName="Contact" styles={{ root: { marginRight: 5 } }} />
-          <span>34</span> 
+          <span>{props.capacity}</span> 
         </span>
       </div>
     );
