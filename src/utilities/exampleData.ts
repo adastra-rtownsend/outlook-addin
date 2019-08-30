@@ -22,7 +22,7 @@ export function createListItems(count: number, startIndex: number = 0): IExample
     return {
       key: 'item-' + (index + startIndex) + (item === undefined ? '-empty' : '-not empty'),
       roomName: _randWord(DATA.roomNames),
-      available: _randWord(DATA.available),
+      available: 'true' ===_randWord(DATA.available),
     };
   });
 };

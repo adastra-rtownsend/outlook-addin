@@ -2,17 +2,22 @@ import * as React from 'react';
 import { IPersonaSharedProps, Persona, PersonaSize, PersonaPresence } from 'office-ui-fabric-react/lib/Persona';
 import { ActionButton } from 'office-ui-fabric-react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
+import { IExampleItem } from '../../utilities/exampleData';
 
 export interface IRoomInfoProps extends IPersonaSharedProps {
   available: boolean
 }
 
-export const DetailedRoomButton: React.FunctionComponent = ({roomInfo}) => {
+interface IRoomButtonProps {
+  roomInfo: IExampleItem,
+ }
+
+export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
   const roomPersona: IRoomInfoProps = {
     showUnknownPersonaCoin: true,
-    text: roomInfo.roomName,
-    showSecondaryText: true,    
-    available: 'true' === (roomInfo.available),
+    text: props.roomInfo.roomName,
+    showSecondaryText: true,
+    available: (true === props.roomInfo.available),
   };
   
   return (
@@ -58,6 +63,9 @@ export const DetailedRoomButton: React.FunctionComponent = ({roomInfo}) => {
 };
 
 function _addLocation(roomName): void {  
+  Office.context.mailbox.item.location.setAsync(roomName, function (asyncResult) {
+    if (asyncResult.status == Office.AsyncResultStatus.Failed) {
+        console.log("Error written location in outlook : " + asyncResult.error.message);
     } else {
         console.log("Location written in outlook");
     }

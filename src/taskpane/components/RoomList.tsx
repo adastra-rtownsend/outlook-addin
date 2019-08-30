@@ -3,8 +3,8 @@ import { FocusZone, FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZ
 import { List } from 'office-ui-fabric-react/lib/List';
 
 import { DetailedRoomButton } from './DetailedRoomButton';
+import { IExampleItem } from '../../utilities/exampleData';
 
-export type IExampleItem = { roomName: string };
 
 export interface IRoomListProps {
   items: IExampleItem[];
@@ -19,8 +19,6 @@ const oddItemHeight = 50;
 const numberOfItemsOnPage = 10;
 
 export default class RoomList extends React.Component<IRoomListProps, IRoomListState> {
-  private _list: List<IExampleItem>;
-
   constructor(props: IRoomListProps) {
     super(props);
 
@@ -32,14 +30,15 @@ export default class RoomList extends React.Component<IRoomListProps, IRoomListS
     let items = this.props.items;
     const { showUnavailable } = this.props;
 
+    console.log(items);
     if (!showUnavailable) {
-      items = items.filter(item => item.available == 'true');
+      items = items.filter(item => item.available === true);
     }
 
     return (
       <FocusZone direction={FocusZoneDirection.vertical}>
         <div className='scroll-container' data-is-scrollable={true}>
-          <List ref={this._resolveList} items={items} getPageHeight={this._getPageHeight} onRenderCell={this._onRenderCell} />
+          <List items={items} getPageHeight={this._getPageHeight} onRenderCell={this._onRenderCell} />
         </div>
       </FocusZone>
     );
@@ -57,14 +56,9 @@ export default class RoomList extends React.Component<IRoomListProps, IRoomListS
 
   private _onRenderCell = (item: IExampleItem): JSX.Element => {
     return (
-      
       <div data-is-focusable={true}>
         <DetailedRoomButton roomInfo={item} />
       </div>
     );
-  };
-
-  private _resolveList = (list: List<IExampleItem>): void => {
-    this._list = list;
   };
 }
