@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, ButtonType } from 'office-ui-fabric-react';
+import { PrimaryButton, ButtonType } from 'office-ui-fabric-react';
 import Header from './Header';
 import HeroList, { HeroListItem } from './HeroList';
 import Progress from './Progress';
@@ -48,7 +48,7 @@ export default class App extends React.Component<AppProps, AppState> {
       <div className='ms-welcome'>
         <Header logo='assets/logo-filled.png' title={this.props.title} message='Welcome' />
         <HeroList message='Discover what Ad Astra for Outlook can do for you!' items={this.state.listItems}>
-          <Button className='ms-welcome__action' buttonType={ButtonType.hero} onClick={this.click}>Get Started</Button>
+          <PrimaryButton className='ms-welcome__action' buttonType={ButtonType.hero} onClick={this.click} text="Get Started">Get Started</PrimaryButton>
         </HeroList>
       </div>
     );

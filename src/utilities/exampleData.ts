@@ -14,7 +14,7 @@ export interface IExampleItem {
   roomName: string;
   available: boolean;
   capacity: number;
-}
+};
 
 export function createListItems(count: number, startIndex: number = 0): IExampleItem[] {
   return Array.apply(null, Array(count)).map((item: number, index: number) => {
@@ -25,14 +25,9 @@ export function createListItems(count: number, startIndex: number = 0): IExample
       available: _randWord(DATA.available),
     };
   });
-}
+};
 
 function _randWord(array: string[]): string {
   const index = Math.floor(Math.random() * array.length);
   return array[index];
-}
-
-function _randBool(array: boolean[]): boolean {
-  const index = Math.floor(Math.random() * array.length);
-  return array[index];
-}
+};
