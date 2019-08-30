@@ -57,7 +57,7 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
   };
   
   onToggleChange = ({}, checked: boolean) => {
-    this.setState({showUnavailable: checked});
+    this.setState({showUnavailable: !checked});
   };
 
   render() {
@@ -76,7 +76,7 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
           </div>
           <div style={{ marginTop: '13px', marginBottom: '5px' }} > 
               <Toggle
-                defaultChecked={this.state.showUnavailable}
+                defaultChecked={!this.state.showUnavailable}
                 label="Only available rooms"
                 inlineLabel={true}
                 onFocus={() => console.log('onFocus called')}
