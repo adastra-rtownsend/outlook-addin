@@ -6,8 +6,11 @@ import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import RoomList from './RoomList';
 import { createListItems } from '../../utilities/exampleData';
 
+import axios from 'axios';
+
 // for now we are using fake data items in the scrolling room grid
-const _cachedItems = createListItems(5000);
+// const _cachedItems = createListItems(5000);
+const _cachedItems = []
 
 export interface AppProps {
 }
@@ -28,8 +31,19 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
     };
   }
 
-
   componentDidMount() {
+    // Call getAvailableRooms function
+  }
+
+  getAvailableRooms() {
+    // Insert axios.get request with api call to populate rooms
+    // Define whether room is available (will need data from reservation in outlook)
+    console.log("Getting list of available rooms")
+  }
+
+  postReservation() {
+    // Need to know when the event creation is saved in outlook
+    console.log("Writing reservation back to Ad Astra")
   }
 
   makePromise = function (itemField) {
