@@ -4,9 +4,10 @@ import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 
 import RoomList from './RoomList';
-import { createListItems } from '../../utilities/exampleData';
+// import { createListItems } from '../../utilities/exampleData';
 
 import axios from 'axios';
+// import { response } from 'express';
 
 // for now we are using fake data items in the scrolling room grid
 // const _cachedItems = createListItems(5000);
@@ -32,13 +33,22 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
   }
 
   componentDidMount() {
-    // Call getAvailableRooms function
+    this.getAvailableRooms();
   }
 
   getAvailableRooms() {
-    // Insert axios.get request with api call to populate rooms
-    // Define whether room is available (will need data from reservation in outlook)
-    console.log("Getting list of available rooms")
+    axios.get('http://qeapp/SG86044Merced/~api/query/room?&fields=Id%2CName%2CroomNumber%2CRoomType%2EName%2CBuilding%2EName%2CBuilding%2EBuildingCode%2CMaxOccupancy%2CIsActive&allowUnlimitedResults=false&sort=%2BBuilding%2EName,Name&page=1&start=0&limit=200').then(response => {
+      response.data.data.forEach((d: any[]) => {
+        _cachedItems.push({
+          key: d[0],
+          roomName: d[1],
+          roomNumber: d[2],
+          roomBuilding: d[4],
+          available: true,
+          capacity: 100
+        })
+      });
+    })
   }
 
   postReservation() {
