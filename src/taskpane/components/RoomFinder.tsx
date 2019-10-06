@@ -16,10 +16,11 @@ const _cachedItems = []
 export interface AppProps {
 }
 
-export interface AppState { 
+export interface AppState {
   startTime: Date;
   endTime: Date;
   showUnavailable: boolean;
+  rooms: Array;
 }
 
 export default class RoomFinder extends React.Component<AppProps, AppState> {
@@ -29,6 +30,7 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
       startTime: null,
       endTime: null,
       showUnavailable: false,
+      rooms: []
     };
   }
 
@@ -37,9 +39,10 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
   }
 
   getAvailableRooms() {
-    axios.get('http://qeapp/SG86044Merced/~api/query/room?&fields=Id%2CName%2CroomNumber%2CRoomType%2EName%2CBuilding%2EName%2CBuilding%2EBuildingCode%2CMaxOccupancy%2CIsActive&allowUnlimitedResults=false&sort=%2BBuilding%2EName,Name&page=1&start=0&limit=200').then(response => {
+    let items = []
+    axios.get('https://qeapp/SG86044Merced/~api/query/room?&fields=Id%2CName%2CroomNumber%2CRoomType%2EName%2CBuilding%2EName%2CBuilding%2EBuildingCode%2CMaxOccupancy%2CIsActive&allowUnlimitedResults=false&sort=%2BBuilding%2EName,Name&page=1&start=0&limit=200').then(response => {
       response.data.data.forEach((d: any[]) => {
-        _cachedItems.push({
+        items.push({
           key: d[0],
           roomName: d[1],
           roomNumber: d[2],
@@ -48,6 +51,11 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
           capacity: 100
         })
       });
+
+      this.setState({
+        ...this.state, 
+        rooms: items
+      }) 
     })
   }
 
@@ -109,7 +117,7 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
               />
           </div>
         </div>
-        <RoomList items={_cachedItems} showUnavailable={this.state.showUnavailable} />
+        <RoomList items={this.state.rooms} showUnavailable={this.state.showUnavailable} />
 
         {/* <DefaultButton className='ms-welcome__action'  onClick={this.click} text="Refresh"/>
         <div>Here is what I pulled of invite: {JSON.stringify(this.state)} </div> */}
