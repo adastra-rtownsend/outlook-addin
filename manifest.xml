@@ -28,7 +28,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://astra-look.surge.sh/taskpane.html"/>
+        <SourceLocation DefaultValue="https://localhost:3000"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -79,7 +79,7 @@
         <bt:Image id="Icon.80x80" DefaultValue="https://aais-public-brand-assets.s3.amazonaws.com/icon-80.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://astra-look.surge.sh/taskpane.html" />
+        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000" />
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Ad Astra Add-in"/>

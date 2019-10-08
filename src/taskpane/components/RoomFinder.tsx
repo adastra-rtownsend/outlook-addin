@@ -11,7 +11,7 @@ import axios from 'axios';
 
 // for now we are using fake data items in the scrolling room grid
 // const _cachedItems = createListItems(5000);
-const _cachedItems = []
+// const _cachedItems = []
 
 export interface AppProps {
 }
@@ -20,7 +20,7 @@ export interface AppState {
   startTime: Date;
   endTime: Date;
   showUnavailable: boolean;
-  rooms: Array;
+  rooms: Array<any>;
 }
 
 export default class RoomFinder extends React.Component<AppProps, AppState> {
@@ -40,15 +40,16 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
 
   getAvailableRooms() {
     let items = []
-    axios.get('https://qeapp/SG86044Merced/~api/query/room?&fields=Id%2CName%2CroomNumber%2CRoomType%2EName%2CBuilding%2EName%2CBuilding%2EBuildingCode%2CMaxOccupancy%2CIsActive&allowUnlimitedResults=false&sort=%2BBuilding%2EName,Name&page=1&start=0&limit=200').then(response => {
+    axios.get('https://www.aaiscloud.com/AustinCC/~api/search/room?_dc=1570564904737&start=0&limit=500&_s=1&fields=RowNumber%2CId%2CRoomName%2CRoomDescription%2CRoomNumber%2CRoomTypeName%2CBuildingCode%2CBuildingName%2CCampusName%2CCapacity%2CBuildingRoomNumberRoomName%2CEffectiveDateId%2CCanEdit%2CCanDelete&sortOrder=%2BBuildingRoomNumberRoomName&page=1&sort=%5B%7B%22property%22%3A%22BuildingRoomNumberRoomName%22%2C%22direction%22%3A%22ASC%22%7D%5D').then(response => {
       response.data.data.forEach((d: any[]) => {
         items.push({
           key: d[0],
-          roomName: d[1],
-          roomNumber: d[2],
-          roomBuilding: d[4],
+          id: d[1],
+          roomName: d[2],
+          roomNumber: d[4],
+          roomBuilding: d[7],
           available: true,
-          capacity: 100
+          capacity: d[9]
         })
       });
 

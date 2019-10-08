@@ -2,21 +2,30 @@ import * as React from 'react';
 import { IPersonaSharedProps, Persona, PersonaSize, PersonaPresence } from 'office-ui-fabric-react/lib/Persona';
 import { ActionButton } from 'office-ui-fabric-react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
-import { IExampleItem } from '../../utilities/exampleData';
+// import { IExampleItem } from '../../utilities/exampleData';
 
 export interface IRoomInfoProps extends IPersonaSharedProps {
   available: boolean, 
   capacity: number
 }
 
+interface IRoomInfo {
+  key: string;
+  roomName: string;
+  roomBuilding: string;
+  roomNumber: string;
+  available: boolean;
+  capacity: number;
+};
+
 interface IRoomButtonProps {
-  roomInfo: IExampleItem,
+  roomInfo: IRoomInfo,
  }
 
 export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
   const roomPersona: IRoomInfoProps = {
     showUnknownPersonaCoin: true,
-    text: props.roomInfo.roomName,
+    text: `${props.roomInfo.roomBuilding} - ${props.roomInfo.roomNumber}`,
     showSecondaryText: true,
     available: (true === props.roomInfo.available),
     capacity: props.roomInfo.capacity,

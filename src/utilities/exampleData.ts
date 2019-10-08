@@ -12,6 +12,8 @@ const DATA = {
 export interface IExampleItem {
   key: string;
   roomName: string;
+  roomBuilding: string;
+  roomNumber: string;
   available: boolean;
   capacity: number;
 };
