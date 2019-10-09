@@ -1,3 +1,5 @@
+import { IRoomInfo } from "../taskpane/components/DetailedRoomButton";
+
 // derivative of reference code  for creating example data iwth  office-ui-fabric-react.
 
 const DATA = {    
@@ -18,7 +20,7 @@ export interface IExampleItem {
   capacity: number;
 };
 
-export function createListItems(count: number, startIndex: number = 0): IExampleItem[] {
+export function createListItems(count: number, startIndex: number = 0): IRoomInfo[] {
   return Array.apply(null, Array(count)).map((item: number, index: number) => {
 
     return {

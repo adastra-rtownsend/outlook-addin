@@ -9,7 +9,7 @@ export interface IRoomInfoProps extends IPersonaSharedProps {
   capacity: number
 }
 
-interface IRoomInfo {
+export interface IRoomInfo {
   key: string;
   roomName: string;
   roomBuilding: string;
