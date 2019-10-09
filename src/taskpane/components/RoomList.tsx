@@ -3,11 +3,12 @@ import { FocusZone, FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZ
 import { List } from 'office-ui-fabric-react/lib/List';
 
 import { DetailedRoomButton } from './DetailedRoomButton';
-import { IExampleItem } from '../../utilities/exampleData';
+import { IRoomInfo } from '../../taskpane/components/DetailedRoomButton';
+//import { IExampleItem } from '../../utilities/exampleData';
 
 
 export interface IRoomListProps {
-  items: IExampleItem[];
+  items: IRoomInfo[];
   showUnavailable: boolean;
 }
 
@@ -53,7 +54,7 @@ export default class RoomList extends React.Component<IRoomListProps, IRoomListS
     return h;
   }
 
-  private _onRenderCell = (item: IExampleItem): JSX.Element => {
+  private _onRenderCell = (item: IRoomInfo): JSX.Element => {
     return (
       <div data-is-focusable={true}>
         <DetailedRoomButton roomInfo={item} />
