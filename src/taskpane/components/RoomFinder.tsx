@@ -106,7 +106,6 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
 
       var url = `http://localhost:2999/spaces/rooms/${roomId}/reservation/?start=${startTime}&end=${endTime}`;
       axios.post(url).then(response => {
-        console.log(response);
         that.setState({hasError: false});
         Office.context.mailbox.item.location.setAsync(roomData.text, function (asyncResult) {
           if (asyncResult.status == Office.AsyncResultStatus.Failed) {
