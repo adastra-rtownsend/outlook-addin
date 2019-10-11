@@ -4,21 +4,31 @@ import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import RoomList from './RoomList';
 import axios from 'axios';
+import { Spinner, SpinnerSize } from 'office-ui-fabric-react';
+import { Stack, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
 
-export interface AppProps {
+const stackStyles: IStackStyles = {
+  root: {
+    height: 250
+  }
+};
+
+export interface IRoomFinderProps {
 }
 
-export interface AppState { 
+export interface IRoomFinderState { 
+  isLoading: boolean;
   startTime: Date;
   endTime: Date;
   showUnavailable: boolean;
   roomData: Array<any>; // is it acceptable for this to be generic or should we pull in IRoomButtonProps
 }
 
-export default class RoomFinder extends React.Component<AppProps, AppState> {
+export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomFinderState> {
   constructor(props, context) {
     super(props, context);
     this.state = {
+      isLoading: false,
       startTime: null,
       endTime: null,
       showUnavailable: false,
@@ -28,6 +38,7 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
 
 
   componentDidMount() {
+    this.refreshRoomInfo();
   }
 
   makePromise = function (itemField) {
@@ -41,6 +52,18 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
         }
       });
     });
+  }
+
+  refreshRoomInfo = () => {
+    this.setState({isLoading: true});
+    axios.get('http://localhost:2999/spaces/rooms/availability?start=2019-10-10T08%3A00%3A00&end=2019-10-10T09%3A00%3A00')
+      .then(response => {
+        this.setState({
+          ...this.state,
+          roomData: response.data
+        });
+        this.setState({isLoading: false});
+      }); // todo catch for error handling    
   }
 
   click = async () => {
@@ -57,17 +80,21 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
   onToggleChange = ({}, checked: boolean) => {
     this.setState({showUnavailable: !checked});
 
-    // todo RT: this doesn't really belong here, but this is a convenient buttonable place for now
-    axios.get('http://localhost:2999/spaces/rooms/availability?start=2019-10-10T08%3A00%3A00&end=2019-10-10T09%3A00%3A00')
-      .then(response => {
-        this.setState({
-          ...this.state,
-          roomData: response.data
-        });
-      }); // todo catch for error handling    
+    // todo RT: this doesn't really belong here, but for now this is a convenient place to force a refresh
+    this.refreshRoomInfo();
   };
 
   render() {
+    if (this.state.isLoading) {
+      return (
+        <Stack grow>
+          <Stack verticalAlign="center" styles={stackStyles}>
+          <Spinner size={SpinnerSize.large} label="Loading room data" ariaLive="assertive" labelPosition="right" />
+          </Stack>
+        </Stack>
+      )
+    }
+
     return (
       <div>
         <div style={{ paddingLeft: '16px', paddingRight: '16px', paddingBottom: '10px', borderBottomWidth: '1px',
