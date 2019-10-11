@@ -1,5 +1,4 @@
 import * as React from 'react';
-// import { DefaultButton } from 'office-ui-fabric-react';
 import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import RoomList from './RoomList';
@@ -19,8 +18,8 @@ export interface IRoomFinderProps {
 
 export interface IRoomFinderState { 
   isLoading: boolean;
-  startTime: Date;
-  endTime: Date;
+  startTime: any;
+  endTime: any;
   showUnavailable: boolean;
   roomData: Array<any>; // is it acceptable for this to be generic or should we pull in IRoomButtonProps
 }
@@ -37,9 +36,12 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     };
   }
 
-
+  onInterval() {
+    this.refreshRoomInfo(false);
+  }  
+  
   componentDidMount() {
-    this.refreshRoomInfo();
+    setInterval(this.onInterval.bind(this), 2000);
   }
 
   makePromise = function (itemField) {
@@ -55,39 +57,37 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     });
   }
 
-  refreshRoomInfo = () => {
+  refreshRoomInfo = async (force) => {
     var that = this; 
-    that.setState({isLoading: true});
     var item = Office.context.mailbox.item;
     Promise.all([that.makePromise(item.start), that.makePromise(item.end)])
       .then(function(values) {
-        var startTime = encodeURIComponent(moment(values[0]).format('YYYY-MM-DDTHH:mm:ss'));
-        var endTime = encodeURIComponent(moment(values[1]).format('YYYY-MM-DDTHH:mm:ss'));
-        var url = `http://localhost:2999/spaces/rooms/availability?start=${startTime}&end=${endTime}`;
-        console.log(url);
-        axios.get(url)
-          .then(response => {
-            that.setState({
-              ...that.state,
-              roomData: response.data
-            });
-            that.setState({isLoading: false});
-          }); // todo neeed error handling, shouldn't jsut assume API succeeds
-      })
+        if (force || !moment(values[0]).isSame(that.state.startTime) || !moment(values[1]).isSame(that.state.endTime)) {
+          that.setState({isLoading: true});
+          that.setState({startTime: moment(values[0])});
+          that.setState({endTime: moment(values[1])});
+          var startTime = encodeURIComponent(moment(values[0]).format('YYYY-MM-DDTHH:mm:ss'));
+          var endTime = encodeURIComponent(moment(values[1]).format('YYYY-MM-DDTHH:mm:ss'));
+          var url = `http://localhost:2999/spaces/rooms/availability?start=${startTime}&end=${endTime}`;
+          console.log(url);
+          axios.get(url)
+            .then(response => {
+              that.setState({isLoading: false});
+              that.setState({
+                ...that.state,
+                roomData: response.data
+              });
+            }); // todo neeed error handling, shouldn't jsut assume API succeeds
+          }
+        })
       .catch(function(error) {
         console.log(error);
         that.setState({isLoading: false});
       });
   }
 
-  click = async () => {
-  };
-  
   onToggleChange = ({}, checked: boolean) => {
     this.setState({showUnavailable: !checked});
-
-    // todo RT: this doesn't really belong here, but for now this is a convenient place to force a refresh
-    this.refreshRoomInfo();
   };
 
   render() {
@@ -126,9 +126,6 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
           </div>
         </div>
         <RoomList items={this.state.roomData} showUnavailable={this.state.showUnavailable} />
-
-        {/* <DefaultButton className='ms-welcome__action'  onClick={this.click} text="Refresh"/>
-        <div>Here is what I pulled of invite: {JSON.stringify(this.state)} </div> */}
       </div>
 );
   }
