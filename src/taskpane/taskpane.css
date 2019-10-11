@@ -89,7 +89,7 @@ b {
 
 .scroll-container {
     overflow: auto;
-    max-height: 500px;
+    max-height: 80vh;
     margin-top: 20px;
 }
 
