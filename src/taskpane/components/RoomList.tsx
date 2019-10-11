@@ -1,13 +1,10 @@
 import * as React from 'react';
 import { FocusZone, FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
 import { List } from 'office-ui-fabric-react/lib/List';
-
-import { DetailedRoomButton } from './DetailedRoomButton';
-import { IExampleItem } from '../../utilities/exampleData';
-
+import { DetailedRoomButton, IRoomButtonProps } from './DetailedRoomButton';
 
 export interface IRoomListProps {
-  items: IExampleItem[];
+  items: IRoomButtonProps[];
   showUnavailable: boolean;
 }
 

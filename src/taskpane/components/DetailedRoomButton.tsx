@@ -2,24 +2,29 @@ import * as React from 'react';
 import { IPersonaSharedProps, Persona, PersonaSize, PersonaPresence } from 'office-ui-fabric-react/lib/Persona';
 import { ActionButton } from 'office-ui-fabric-react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
-import { IExampleItem } from '../../utilities/exampleData';
 
 export interface IRoomInfoProps extends IPersonaSharedProps {
   available: boolean, 
   capacity: number
 }
 
-interface IRoomButtonProps {
-  roomInfo: IExampleItem,
+// todo extra the data shape out, doing this here tightly couples the props for this componey and the API data shape
+export interface IRoomButtonProps {
+  roomInfo: {
+    roomId: string,
+    roomBuildingAndNumber: string,
+    whyIsRoomIdHereTwice: string,
+    available: boolean,
+  }
  }
 
 export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
   const roomPersona: IRoomInfoProps = {
     showUnknownPersonaCoin: true,
-    text: props.roomInfo.roomName,
+    text: props.roomInfo.roomBuildingAndNumber,
     showSecondaryText: true,
     available: (true === props.roomInfo.available),
-    capacity: props.roomInfo.capacity,
+    capacity: 24, // todo need the express app to return this
   };
   
   return (

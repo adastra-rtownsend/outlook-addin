@@ -2,12 +2,8 @@ import * as React from 'react';
 // import { DefaultButton } from 'office-ui-fabric-react';
 import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
-
 import RoomList from './RoomList';
-import { createListItems } from '../../utilities/exampleData';
-
-// for now we are using fake data items in the scrolling room grid
-const _cachedItems = createListItems(5000);
+import axios from 'axios';
 
 export interface AppProps {
 }
@@ -16,6 +12,7 @@ export interface AppState {
   startTime: Date;
   endTime: Date;
   showUnavailable: boolean;
+  roomData: Array<any>; // is it acceptable for this to be generic or should we pull in IRoomButtonProps
 }
 
 export default class RoomFinder extends React.Component<AppProps, AppState> {
@@ -25,6 +22,7 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
       startTime: null,
       endTime: null,
       showUnavailable: false,
+      roomData: [],
     };
   }
 
@@ -58,6 +56,15 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
   
   onToggleChange = ({}, checked: boolean) => {
     this.setState({showUnavailable: !checked});
+
+    // todo RT: this doesn't really belong here, but this is a convenient buttonable place for now
+    axios.get('http://localhost:2999/spaces/rooms/availability?start=2019-10-10T08%3A00%3A00&end=2019-10-10T09%3A00%3A00')
+      .then(response => {
+        this.setState({
+          ...this.state,
+          roomData: response.data
+        });
+      }); // todo catch for error handling    
   };
 
   render() {
@@ -85,7 +92,7 @@ export default class RoomFinder extends React.Component<AppProps, AppState> {
               />
           </div>
         </div>
-        <RoomList items={_cachedItems} showUnavailable={this.state.showUnavailable} />
+        <RoomList items={this.state.roomData} showUnavailable={this.state.showUnavailable} />
 
         {/* <DefaultButton className='ms-welcome__action'  onClick={this.click} text="Refresh"/>
         <div>Here is what I pulled of invite: {JSON.stringify(this.state)} </div> */}
