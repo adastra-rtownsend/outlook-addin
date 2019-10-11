@@ -107,3 +107,9 @@ b {
     color: #e81123;
     padding-right: 6px;
 }
+
+.book-room-button {
+    position: absolute !important; 
+    right: 10px;
+    bottom: 10px;
+}

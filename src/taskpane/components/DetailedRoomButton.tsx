@@ -28,7 +28,7 @@ export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
   };
   
   return (
-    <ActionButton allowDisabledFocus onClick={() => _addLocation(roomPersona.text)} style={{ paddingLeft: '16px', paddingRight: '16px', 
+    <ActionButton allowDisabledFocus onClick={() => _selectRoom(roomPersona)} style={{ paddingLeft: '16px', paddingRight: '16px', 
                   paddingBottom: '9px', paddingTop: '9px', height: 'auto'}}>
       <Persona {...roomPersona} size={PersonaSize.size32} presence={PersonaPresence.none} 
           onRenderSecondaryText={_onRenderSecondaryText}
@@ -67,14 +67,9 @@ export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
       </div>
     );
   }; 
+
+  function _selectRoom(roomData): void {  
+    Office.context.roamingSettings.set('selectedRoom', roomData);
+  };
 };
 
-function _addLocation(roomName): void {  
-  Office.context.mailbox.item.location.setAsync(roomName, function (asyncResult) {
-    if (asyncResult.status == Office.AsyncResultStatus.Failed) {
-        console.log("Error written location in outlook : " + asyncResult.error.message);
-    } else {
-        console.log("Location written in outlook");
-    }
-  });
-};

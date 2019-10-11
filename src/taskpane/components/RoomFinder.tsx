@@ -3,7 +3,7 @@ import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import RoomList from './RoomList';
 import axios from 'axios';
-import { Spinner, SpinnerSize } from 'office-ui-fabric-react';
+import { Spinner, SpinnerSize, PrimaryButton, ButtonType } from 'office-ui-fabric-react';
 import { Stack, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
 import * as moment from 'moment';
 
@@ -42,6 +42,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
   
   componentDidMount() {
     setInterval(this.onInterval.bind(this), 2000);
+    this.refreshRoomInfo(true);
   }
 
   makePromise = function (itemField) {
@@ -90,6 +91,19 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     this.setState({showUnavailable: !checked});
   };
 
+  onBookRoom = () => {
+    let roomData = Office.context.roamingSettings.get('selectedRoom');
+    if (roomData.text) {
+      Office.context.mailbox.item.location.setAsync(roomData.text, function (asyncResult) {
+        if (asyncResult.status == Office.AsyncResultStatus.Failed) {
+            console.log("Error written location in outlook : " + asyncResult.error.message);
+        } else {
+            console.log("Location written in outlook");
+        }
+      });
+    }
+  };
+
   render() {
     if (this.state.isLoading) {
       return (
@@ -126,6 +140,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
           </div>
         </div>
         <RoomList items={this.state.roomData} showUnavailable={this.state.showUnavailable} />
+        <PrimaryButton className='book-room-button' buttonType={ButtonType.hero} onClick={this.onBookRoom} text="Book Room"/>
       </div>
 );
   }
