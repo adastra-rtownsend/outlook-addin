@@ -6,6 +6,7 @@ import RoomList from './RoomList';
 import axios from 'axios';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react';
 import { Stack, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
+import * as moment from 'moment';
 
 const stackStyles: IStackStyles = {
   root: {
@@ -55,26 +56,31 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
   }
 
   refreshRoomInfo = () => {
-    this.setState({isLoading: true});
-    axios.get('http://localhost:2999/spaces/rooms/availability?start=2019-10-10T08%3A00%3A00&end=2019-10-10T09%3A00%3A00')
-      .then(response => {
-        this.setState({
-          ...this.state,
-          roomData: response.data
-        });
-        this.setState({isLoading: false});
-      }); // todo catch for error handling    
-  }
-
-  click = async () => {
+    var that = this; 
+    that.setState({isLoading: true});
     var item = Office.context.mailbox.item;
-    Promise.all([this.makePromise(item.start), this.makePromise(item.end)])
+    Promise.all([that.makePromise(item.start), that.makePromise(item.end)])
       .then(function(values) {
-        console.log(values);
+        var startTime = encodeURIComponent(moment(values[0]).format('YYYY-MM-DDTHH:mm:ss'));
+        var endTime = encodeURIComponent(moment(values[1]).format('YYYY-MM-DDTHH:mm:ss'));
+        var url = `http://localhost:2999/spaces/rooms/availability?start=${startTime}&end=${endTime}`;
+        console.log(url);
+        axios.get(url)
+          .then(response => {
+            that.setState({
+              ...that.state,
+              roomData: response.data
+            });
+            that.setState({isLoading: false});
+          }); // todo neeed error handling, shouldn't jsut assume API succeeds
       })
       .catch(function(error) {
         console.log(error);
+        that.setState({isLoading: false});
       });
+  }
+
+  click = async () => {
   };
   
   onToggleChange = ({}, checked: boolean) => {
