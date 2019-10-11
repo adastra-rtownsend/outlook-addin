@@ -11,25 +11,29 @@ export interface IRoomInfoProps extends IPersonaSharedProps {
 // todo extra the data shape out, doing this here tightly couples the props for this componey and the API data shape
 export interface IRoomButtonProps {
   roomInfo: {
-    roomId: string,
-    roomBuildingAndNumber: string,
-    whyIsRoomIdHereTwice: string,
-    available: boolean,
+    roomId: string;
+    roomBuildingAndNumber: string;
+    whyIsRoomIdHereTwice: string;
+    available: boolean;
   }
+  checked?: boolean;
  }
 
 export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
   const roomPersona: IRoomInfoProps = {
     showUnknownPersonaCoin: true,
+    roomId: props.roomInfo.roomId,
     text: props.roomInfo.roomBuildingAndNumber,
     showSecondaryText: true,
     available: (true === props.roomInfo.available),
     capacity: 24, // todo need the express app to return this
   };
+
+
   
   return (
     <ActionButton allowDisabledFocus onClick={() => _selectRoom(roomPersona)} style={{ paddingLeft: '16px', paddingRight: '16px', 
-                  paddingBottom: '9px', paddingTop: '9px', height: 'auto'}}>
+                  paddingBottom: '9px', paddingTop: '9px', height: 'auto'}} checked={props.checked}>
       <Persona {...roomPersona} size={PersonaSize.size32} presence={PersonaPresence.none} 
           onRenderSecondaryText={_onRenderSecondaryText}
           onRenderInitials ={_onRenderInitials} />

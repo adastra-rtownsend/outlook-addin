@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Spinner, SpinnerSize, PrimaryButton, ButtonType } from 'office-ui-fabric-react';
 import { Stack, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
 import * as moment from 'moment';
+import { Stack, MessageBar, MessageBarType } from 'office-ui-fabric-react';
 
 const stackStyles: IStackStyles = {
   root: {
@@ -18,6 +19,7 @@ export interface IRoomFinderProps {
 
 export interface IRoomFinderState { 
   isLoading: boolean;
+  hasError: boolean;
   startTime: any;
   endTime: any;
   showUnavailable: boolean;
@@ -29,6 +31,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     super(props, context);
     this.state = {
       isLoading: false,
+      hasError: false, 
       startTime: null,
       endTime: null,
       showUnavailable: false,
@@ -70,7 +73,6 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
           var startTime = encodeURIComponent(moment(values[0]).format('YYYY-MM-DDTHH:mm:ss'));
           var endTime = encodeURIComponent(moment(values[1]).format('YYYY-MM-DDTHH:mm:ss'));
           var url = `http://localhost:2999/spaces/rooms/availability?start=${startTime}&end=${endTime}`;
-          console.log(url);
           axios.get(url)
             .then(response => {
               that.setState({isLoading: false});
@@ -82,7 +84,6 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
           }
         })
       .catch(function(error) {
-        console.log(error);
         that.setState({isLoading: false});
       });
   }
@@ -91,16 +92,33 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     this.setState({showUnavailable: !checked});
   };
 
+  dismissError = () => {
+    this.setState({hasError: false});
+  };
+
   onBookRoom = () => {
     let roomData = Office.context.roamingSettings.get('selectedRoom');
-    if (roomData.text) {
-      Office.context.mailbox.item.location.setAsync(roomData.text, function (asyncResult) {
-        if (asyncResult.status == Office.AsyncResultStatus.Failed) {
-            console.log("Error written location in outlook : " + asyncResult.error.message);
-        } else {
-            console.log("Location written in outlook");
-        }
-      });
+    if (roomData && roomData.text) {
+      var that = this; 
+      var startTime = encodeURIComponent(moment(this.state.startTime).format('YYYY-MM-DDTHH:mm:ss'));
+      var endTime = encodeURIComponent(moment(this.state.endTime).format('YYYY-MM-DDTHH:mm:ss'));
+      var roomId = roomData.roomId;
+
+      var url = `http://localhost:2999/spaces/rooms/${roomId}/reservation/?start=${startTime}&end=${endTime}`;
+      axios.post(url).then(response => {
+        console.log(response);
+        that.setState({hasError: false});
+        Office.context.mailbox.item.location.setAsync(roomData.text, function (asyncResult) {
+          if (asyncResult.status == Office.AsyncResultStatus.Failed) {
+              console.log("Error written location in outlook : " + asyncResult.error.message);
+          } else {
+              console.log("Location written in outlook");
+          }
+        });
+      }).catch(error => {
+        this.setState({hasError: true});
+        console.log(error);
+      }); // todo neeed error handling, shouldn't jsut assume API succeeds                
     }
   };
 
@@ -140,7 +158,15 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
           </div>
         </div>
         <RoomList items={this.state.roomData} showUnavailable={this.state.showUnavailable} />
-        <PrimaryButton className='book-room-button' buttonType={ButtonType.hero} onClick={this.onBookRoom} text="Book Room"/>
+        { !this.state.hasError && 
+          <PrimaryButton className='book-room-button' buttonType={ButtonType.hero} onClick={this.onBookRoom} text="Book Room"/>
+        }
+        { this.state.hasError && 
+          <MessageBar className='error-message-bar' messageBarType={MessageBarType.error} 
+            onDismiss={this.dismissError} isMultiline={false} dismissButtonAriaLabel="Close">
+              Failed to book room in Astra Schedule
+          </MessageBar>
+        }    
       </div>
 );
   }
