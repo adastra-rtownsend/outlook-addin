@@ -68,7 +68,6 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
 
     // induce an artificial 2 second delay
     setTimeout(function() { 
-      console.log(that.state.roomData[0]);
       that.setState({
         ...that.state,
         roomData: createListItems(5000),
