@@ -6,7 +6,7 @@ import axios from 'axios';
 import { Spinner, SpinnerSize, PrimaryButton, ButtonType } from 'office-ui-fabric-react';
 import { Stack, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
 import * as moment from 'moment';
-import { Stack, MessageBar, MessageBarType } from 'office-ui-fabric-react';
+import { MessageBar, MessageBarType } from 'office-ui-fabric-react';
 
 const stackStyles: IStackStyles = {
   root: {
@@ -84,6 +84,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
           }
         })
       .catch(function(error) {
+        console.log(error);
         that.setState({isLoading: false});
       });
   }
@@ -105,7 +106,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
       var roomId = roomData.roomId;
 
       var url = `http://localhost:2999/spaces/rooms/${roomId}/reservation/?start=${startTime}&end=${endTime}`;
-      axios.post(url).then(response => {
+      axios.post(url).then(() => {
         that.setState({hasError: false});
         Office.context.mailbox.item.location.setAsync(roomData.text, function (asyncResult) {
           if (asyncResult.status == Office.AsyncResultStatus.Failed) {
