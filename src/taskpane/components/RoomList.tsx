@@ -16,6 +16,9 @@ const evenItemHeight = 25;
 const oddItemHeight = 50;
 const numberOfItemsOnPage = 10;
 
+const theme: ITheme = getTheme();
+const { palette } = theme;
+
 interface IListBasicExampleClassObject {
   itemCell: string;
 }
