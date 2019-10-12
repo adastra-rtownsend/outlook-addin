@@ -7,6 +7,7 @@ import { Spinner, SpinnerSize, PrimaryButton, ButtonType } from 'office-ui-fabri
 import { Stack, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
 import * as moment from 'moment';
 import { MessageBar, MessageBarType } from 'office-ui-fabric-react';
+import { createListItems } from '../../utilities/exampleData';
 
 const stackStyles: IStackStyles = {
   root: {
@@ -61,31 +62,57 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     });
   }
 
+  loadRoomsFromExampleData = async () => {
+    var that = this; 
+    that.setState({isLoading: true});
+
+    // induce an artificial 2 second delay
+    setTimeout(function() { 
+      console.log(that.state.roomData[0]);
+      that.setState({
+        ...that.state,
+        roomData: createListItems(5000),
+        isLoading: false,
+      });
+    }, 2000) 
+  }
+
+  retrieveRoomsFromServer = async (startTime, endTime) => {
+    var that = this; 
+    var url = `http://localhost:2999/spaces/rooms/availability?start=${startTime}&end=${endTime}`;
+    try {
+      const response = await axios.get(url);
+        that.setState({
+          ...that.state,
+          roomData: response.data,
+          isLoading: false,
+        });
+    } catch (error) {
+      console.error(error);
+      that.setState({isLoading: false});
+    }
+  }
+
   refreshRoomInfo = async (force) => {
     var that = this; 
     var item = Office.context.mailbox.item;
     Promise.all([that.makePromise(item.start), that.makePromise(item.end)])
       .then(function(values) {
         if (force || !moment(values[0]).isSame(that.state.startTime) || !moment(values[1]).isSame(that.state.endTime)) {
-          that.setState({isLoading: true});
           that.setState({startTime: moment(values[0])});
           that.setState({endTime: moment(values[1])});
           var startTime = encodeURIComponent(moment(values[0]).format('YYYY-MM-DDTHH:mm:ss'));
           var endTime = encodeURIComponent(moment(values[1]).format('YYYY-MM-DDTHH:mm:ss'));
-          var url = `http://localhost:2999/spaces/rooms/availability?start=${startTime}&end=${endTime}`;
-          axios.get(url)
-            .then(response => {
-              that.setState({isLoading: false});
-              that.setState({
-                ...that.state,
-                roomData: response.data
-              });
-            }); // todo neeed error handling, shouldn't jsut assume API succeeds
+          if (false ) {
+            // avaiability is reandomized, so not utilizing startTime and endTime params
+            that.retrieveRoomsFromServer(startTime, endTime);
+          } else {
+           that. loadRoomsFromExampleData();
           }
+        }
         })
       .catch(function(error) {
         console.log(error);
-        that.setState({isLoading: false});
       });
   }
 

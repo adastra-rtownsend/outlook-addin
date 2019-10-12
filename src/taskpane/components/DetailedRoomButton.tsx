@@ -4,27 +4,29 @@ import { ActionButton } from 'office-ui-fabric-react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 
 export interface IRoomInfoProps extends IPersonaSharedProps {
-  available: boolean, 
-  capacity: number
+  roomId: string;
+  available: boolean; 
+  capacity: number;
 }
 
-// todo extra the data shape out, doing this here tightly couples the props for this componey and the API data shape
+// note: this should match to server definition
+export interface ISourceRoomInfo {
+  roomId: string;
+  roomBuildingAndNumber: string;
+  whyIsRoomIdHereTwice: string;
+  available: boolean;
+}
+
 export interface IRoomButtonProps {
-  roomInfo: {
-    roomId: string;
-    roomBuildingAndNumber: string;
-    whyIsRoomIdHereTwice: string;
-    available: boolean;
-  }
-  checked?: boolean;
+  roomInfo: ISourceRoomInfo;
  }
 
 export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
   const roomPersona: IRoomInfoProps = {
     showUnknownPersonaCoin: true,
-    roomId: props.roomInfo.roomId,
     text: props.roomInfo.roomBuildingAndNumber,
     showSecondaryText: true,
+    roomId: props.roomInfo.roomId,
     available: (true === props.roomInfo.available),
     capacity: 24, // todo need the express app to return this
   };
@@ -33,7 +35,7 @@ export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
   
   return (
     <ActionButton allowDisabledFocus onClick={() => _selectRoom(roomPersona)} style={{ paddingLeft: '16px', paddingRight: '16px', 
-                  paddingBottom: '9px', paddingTop: '9px', height: 'auto'}} checked={props.checked}>
+                  paddingBottom: '9px', paddingTop: '9px', height: 'auto'}}>
       <Persona {...roomPersona} size={PersonaSize.size32} presence={PersonaPresence.none} 
           onRenderSecondaryText={_onRenderSecondaryText}
           onRenderInitials ={_onRenderInitials} />
