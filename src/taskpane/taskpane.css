@@ -93,14 +93,9 @@ b {
     margin-top: 20px;
 }
 
-.ms-Persona-initials.initials-134 {
-    color: #ffffff;
-    background: #0078d4;
-}
-
-.ms-Persona-initials.initials-140 {
-    color: #ffffff;
-    background: #0078d4;
+.ms-Persona-initials {
+    color: #ffffff !important;
+    background: #0078d4 !important;
 }
 
 .available-text {
