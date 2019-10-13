@@ -14,7 +14,7 @@ export interface AppProps {
 
 export interface AppState {
   listItems: HeroListItem[];
-  haveInitializedOfficeSettings: boolean;
+  officeSettingsInitializationState: number; // quick hack - 0: unstarted 1: inprogress 2: done
   showIntro: boolean;
   useSampleData: boolean;
   apiBasePath: string;
@@ -25,7 +25,7 @@ export default class App extends React.Component<AppProps, AppState> {
     super(props, context);
     this.state = {
       listItems: [],
-      haveInitializedOfficeSettings: false,
+      officeSettingsInitializationState: 0,
       // can't set these accurately until isOfficeInitialized is true 
       showIntro: true, 
       useSampleData: false,
@@ -38,22 +38,25 @@ export default class App extends React.Component<AppProps, AppState> {
     var defaults = getDefaultSettings();
 
     var showWelcome = Office.context.roamingSettings.get(WELCOME_SCREEN_SETTTING);
-    var useSampleData = Office.context.roamingSettings.get(DEMO_DATA_SETTING);
-    var apiBasePath = Office.context.roamingSettings.get(API_PATH_SETTING);
+    var useDemoData = Office.context.roamingSettings.get(DEMO_DATA_SETTING);
+    var apiPath = Office.context.roamingSettings.get(API_PATH_SETTING);
 
     if (showWelcome === undefined) {
       showWelcome = defaults.showWelcomeScreen;
       console.log(`Welcome screen setting not set, initializing to ${showWelcome}`);
+      this.setState({showIntro: showWelcome});
     }
     
-    if (useSampleData === undefined) {
-      useSampleData = defaults.useSampleData;
-      console.log(`Sample data setting not set, initializing to ${useSampleData}`);
+    if (useDemoData === undefined) {
+      useDemoData = defaults.useSampleData;
+      console.log(`Sample data setting not set, initializing to ${useDemoData}`);
+      this.setState({useSampleData: useDemoData});
     }
     
-    if (apiBasePath === undefined) {
-      apiBasePath = defaults.apiBasePath;
-      console.log(`API base path setting not set, initializing to ${apiBasePath}`);
+    if (apiPath === undefined) {
+      apiPath = defaults.apiBasePath;
+      console.log(`API base path setting not set, initializing to ${apiPath}`);
+      this.setState({apiBasePath: apiPath});
     }
 
     if (showWelcome === 1) {
@@ -61,13 +64,15 @@ export default class App extends React.Component<AppProps, AppState> {
     } else if (showWelcome === 2) {
       this.setState({showIntro: true});
       Office.context.roamingSettings.set(WELCOME_SCREEN_SETTTING, 1); // set to 'never' so it won't show next time
-      Office.context.roamingSettings.saveAsync();
     } else {
       this.setState({showIntro: true});
     }
 
-    this.setState({useSampleData: useSampleData});
-    this.setState({apiBasePath: apiBasePath});
+    // some changes may have occured, so sync the settings
+    var that = this;
+    Office.context.roamingSettings.saveAsync(() => {
+      that.setState({officeSettingsInitializationState: 2});
+    });
   }
 
   componentDidMount() {
@@ -86,10 +91,9 @@ export default class App extends React.Component<AppProps, AppState> {
   }
 
   componentDidUpdate() {
-    if (this.props.isOfficeInitialized && !this.state.haveInitializedOfficeSettings) {
+    if (this.props.isOfficeInitialized && this.state.officeSettingsInitializationState === 0) {
+      this.setState({officeSettingsInitializationState: 1});
       this._initializeOfficeSettings();
-      this.setState({haveInitializedOfficeSettings: true});
-      this.forceUpdate();
     } 
   }
 
@@ -114,7 +118,7 @@ export default class App extends React.Component<AppProps, AppState> {
       isOfficeInitialized,
     } = this.props;
 
-    if (!isOfficeInitialized || !this.state.haveInitializedOfficeSettings) {
+    if (!isOfficeInitialized || this.state.officeSettingsInitializationState < 2) {
       return (
         <div></div>
       );
