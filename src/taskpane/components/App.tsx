@@ -30,6 +30,10 @@ export default class App extends React.Component<AppProps, AppState> {
   }
 
   _initializeOfficeSettings() {
+    console.log('###### ' + Office.context.roamingSettings.get('adastra.showWelcomeScreen'));
+    console.log('###### ' + Office.context.roamingSettings.get('adastra.useSampleData'));
+    console.log('###### ' + Office.context.roamingSettings.get('adastra.apiBasePath'));
+
     var showWelcome = Office.context.roamingSettings.get('adastra.showWelcomeScreen');
     if (showWelcome === 1) {
       this.setState({showIntro: false});
@@ -75,7 +79,7 @@ export default class App extends React.Component<AppProps, AppState> {
   renderIntro() {
     return (
       <div className='ms-welcome'>
-        <Header logo='assets/logo-filled.png' title={this.props.title} message='Welcome' />
+        <Header logo='assets/logo-filled.png' title='' message='Welcome' />
         <HeroList message='Discover what Ad Astra for Outlook can do for you!' items={this.state.listItems}>
           <PrimaryButton className='ms-welcome__action' buttonType={ButtonType.hero} onClick={this.click} text="Get Started"/>
         </HeroList>

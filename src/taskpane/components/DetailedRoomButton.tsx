@@ -15,6 +15,7 @@ export interface ISourceRoomInfo {
   roomBuildingAndNumber: string;
   whyIsRoomIdHereTwice: string;
   available: boolean;
+  capacity?: number;
 }
 
 export interface IRoomButtonProps {
@@ -28,7 +29,7 @@ export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
     showSecondaryText: true,
     roomId: props.roomInfo.roomId,
     available: (true === props.roomInfo.available),
-    capacity: 24, // todo need the express app to return this
+    capacity: props.roomInfo.capacity || 24, 
   };
 
 
