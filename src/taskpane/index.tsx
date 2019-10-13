@@ -18,8 +18,8 @@ const render = (Component) => {
         <Provider store={store}>
             <AppContainer>
                 <Component isOfficeInitialized={isOfficeInitialized} />
-            </AppContainer>,
-        </Provider>
+            </AppContainer>
+        </Provider>,
         document.getElementById('container')
     );
 };
