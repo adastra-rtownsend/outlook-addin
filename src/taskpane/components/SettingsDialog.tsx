@@ -5,7 +5,10 @@ import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { Link } from 'office-ui-fabric-react/lib/Link';
 import { Slider } from 'office-ui-fabric-react/lib/Slider';
-import { getDefaultSettings } from '../../utilities/config';
+import { WELCOME_SCREEN_SETTTING } from '../../utilities/config';
+import { DEMO_DATA_SETTING } from '../../utilities/config';
+import { API_PATH_SETTING } from '../../utilities/config';
+import { SELECTED_ROOM_SETTING } from '../../utilities/config';
 
 export interface ISettingsDialogStates {
   hideDialog: boolean;
@@ -17,9 +20,9 @@ export interface ISettingsDialogStates {
 export default class SettingsDialog extends React.Component<{}, ISettingsDialogStates> {
   public state: ISettingsDialogStates = {
     hideDialog: true,
-    showWelcomeScreen: Office.context.roamingSettings.get('adastra.showWelcomeScreen'),
-    useSampleData: Office.context.roamingSettings.get('adastra.useSampleData'),
-    apiBasePath: Office.context.roamingSettings.get('adastra.apiBasePath'),
+    showWelcomeScreen: Office.context.roamingSettings.get(WELCOME_SCREEN_SETTTING),
+    useSampleData: Office.context.roamingSettings.get(DEMO_DATA_SETTING),
+    apiBasePath: Office.context.roamingSettings.get(API_PATH_SETTING),
   };
   
   private _dragOptions = {
@@ -31,14 +34,20 @@ export default class SettingsDialog extends React.Component<{}, ISettingsDialogS
   // this is a very non-react'y way to do this, but since this settings dialog is likely 
   // temporary, we'll roll with it
   public showDialog() {
+    this.setState({
+      ...this.state,
+      showWelcomeScreen: Office.context.roamingSettings.get(WELCOME_SCREEN_SETTTING),
+      useSampleData: Office.context.roamingSettings.get(DEMO_DATA_SETTING),
+      apiBasePath: Office.context.roamingSettings.get(API_PATH_SETTING),
+    })
     this._showDialog();
   };
 
   private _restoreDefaults() {
-    const defaults = getDefaultSettings();
-    Office.context.roamingSettings.set('adastra.showWelcomeScreen', defaults.showWelcomeScreen);
-    Office.context.roamingSettings.set('adastra.useSampleData', defaults.useSampleData);
-    Office.context.roamingSettings.set('adastra.apiBasePath', defaults.apiBasePath);
+    Office.context.roamingSettings.remove(WELCOME_SCREEN_SETTTING);
+    Office.context.roamingSettings.remove(DEMO_DATA_SETTING);
+    Office.context.roamingSettings.remove(API_PATH_SETTING);
+    Office.context.roamingSettings.remove(SELECTED_ROOM_SETTING);
     Office.context.roamingSettings.saveAsync(() => {
       Office.context.ui.closeContainer();
     });
@@ -52,18 +61,18 @@ export default class SettingsDialog extends React.Component<{}, ISettingsDialogS
 
   private _onToggleSampleData = ({}, checked: boolean) => {
     this.setState({ useSampleData: checked });
-    this._applySetting('adastra.useSampleData', checked);
+    this._applySetting(DEMO_DATA_SETTING, checked);
   };
 
   private _onSetShowWelcomeScreen = (value: number) => {
     this.setState({ showWelcomeScreen: value });
-    this._applySetting('adastra.showWelcomeScreen', value);    
+    this._applySetting(WELCOME_SCREEN_SETTTING, value);    
   };
 
   private _onSetUrl = ({}, newValue?: string) => {
     const val = newValue || '';
     this.setState({ apiBasePath: val});
-    this._applySetting('adastra.apiBasePath', val);
+    this._applySetting(API_PATH_SETTING, val);
   };
 
   private _getShowWelcomeHintText(value) {

@@ -9,6 +9,7 @@ import * as moment from 'moment';
 import { MessageBar, MessageBarType } from 'office-ui-fabric-react';
 import { createListItems } from '../../utilities/exampleData';
 import SettingsDialog from './SettingsDialog';
+import { SELECTED_ROOM_SETTING } from '../../utilities/config';
 
 const stackStyles: IStackStyles = {
   root: {
@@ -176,7 +177,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
   }
 
   onBookRoom = async () => {
-    let roomData = Office.context.roamingSettings.get('selectedRoom');
+    let roomData = Office.context.roamingSettings.get(SELECTED_ROOM_SETTING);
     if (roomData && roomData.text) {
       var startTime = encodeURIComponent(moment(this.state.startTime).format('YYYY-MM-DDTHH:mm:ss'));
       var endTime = encodeURIComponent(moment(this.state.endTime).format('YYYY-MM-DDTHH:mm:ss'));

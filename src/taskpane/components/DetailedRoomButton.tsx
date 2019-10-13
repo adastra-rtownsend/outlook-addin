@@ -2,6 +2,7 @@ import * as React from 'react';
 import { IPersonaSharedProps, Persona, PersonaSize, PersonaPresence } from 'office-ui-fabric-react/lib/Persona';
 import { ActionButton } from 'office-ui-fabric-react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
+import { SELECTED_ROOM_SETTING } from '../../utilities/config';
 
 export interface IRoomInfoProps extends IPersonaSharedProps {
   roomId: string;
@@ -76,7 +77,7 @@ export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
   }; 
 
   function _selectRoom(roomData): void {  
-    Office.context.roamingSettings.set('selectedRoom', roomData);
+    Office.context.roamingSettings.set(SELECTED_ROOM_SETTING, roomData);
   };
 };
 

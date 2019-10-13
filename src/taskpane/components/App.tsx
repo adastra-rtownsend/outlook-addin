@@ -3,6 +3,10 @@ import { PrimaryButton, ButtonType } from 'office-ui-fabric-react';
 import Header from './Header';
 import HeroList, { HeroListItem } from './HeroList';
 import RoomFinder from './RoomFinder';
+import { WELCOME_SCREEN_SETTTING } from '../../utilities/config';
+import { DEMO_DATA_SETTING } from '../../utilities/config';
+import { API_PATH_SETTING } from '../../utilities/config';
+import { getDefaultSettings} from '../../utilities/config';
 
 export interface AppProps {
   isOfficeInitialized: boolean;
@@ -30,19 +34,40 @@ export default class App extends React.Component<AppProps, AppState> {
   }
 
   _initializeOfficeSettings() {
-    var showWelcome = Office.context.roamingSettings.get('adastra.showWelcomeScreen');
+
+    var defaults = getDefaultSettings();
+
+    var showWelcome = Office.context.roamingSettings.get(WELCOME_SCREEN_SETTTING);
+    var useSampleData = Office.context.roamingSettings.get(DEMO_DATA_SETTING);
+    var apiBasePath = Office.context.roamingSettings.get(API_PATH_SETTING);
+
+    if (showWelcome === undefined) {
+      showWelcome = defaults.showWelcomeScreen;
+      console.log(`Welcome screen setting not set, initializing to ${showWelcome}`);
+    }
+    
+    if (useSampleData === undefined) {
+      useSampleData = defaults.useSampleData;
+      console.log(`Sample data setting not set, initializing to ${useSampleData}`);
+    }
+    
+    if (apiBasePath === undefined) {
+      apiBasePath = defaults.apiBasePath;
+      console.log(`API base path setting not set, initializing to ${apiBasePath}`);
+    }
+
     if (showWelcome === 1) {
       this.setState({showIntro: false});
-    } else if (!showWelcome || showWelcome === 2) { // also handle thie case where setting doesn't exist yet
+    } else if (showWelcome === 2) {
       this.setState({showIntro: true});
-      Office.context.roamingSettings.set('adastra.showWelcomeScreen', 1); // set to 'never' so it won't show nexxt time
+      Office.context.roamingSettings.set(WELCOME_SCREEN_SETTTING, 1); // set to 'never' so it won't show next time
       Office.context.roamingSettings.saveAsync();
     } else {
       this.setState({showIntro: true});
     }
 
-    this.setState({useSampleData: false !== Office.context.roamingSettings.get('adastra.useSampleData')});
-    this.setState({apiBasePath: Office.context.roamingSettings.get('adastra.apiBasePath')});
+    this.setState({useSampleData: useSampleData});
+    this.setState({apiBasePath: apiBasePath});
   }
 
   componentDidMount() {

@@ -1,8 +1,13 @@
 const _defaultSettings = {
   showWelcomeScreen: 2, // 1 = never, 2 = next time, 3 = always
   useSampleData: true,
-  apiBasePath: 'http://localhost:3000',
+  apiBasePath: 'https://lit-shelf-67655.herokuapp.com',
 }
+
+export const WELCOME_SCREEN_SETTTING = 'adastra.demo.showWelcomeScreen';
+export const DEMO_DATA_SETTING = 'adastra.demo.useSampleData';
+export const API_PATH_SETTING  = 'adastra.demo.apiBasePath';
+export const SELECTED_ROOM_SETTING = 'adastra.demo.selectedRoom';
 
 export function getDefaultSettings() {
   return _defaultSettings;
