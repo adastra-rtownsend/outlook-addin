@@ -8,6 +8,7 @@ import { Stack, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
 import * as moment from 'moment';
 import { MessageBar, MessageBarType } from 'office-ui-fabric-react';
 import { createListItems } from '../../utilities/exampleData';
+import SettingsDialog from './SettingsDialog';
 
 const stackStyles: IStackStyles = {
   root: {
@@ -25,6 +26,7 @@ export interface IRoomFinderState {
   endTime: any;
   showUnavailable: boolean;
   roomData: Array<any>; // is it acceptable for this to be generic or should we pull in IRoomButtonProps
+  settingsDialog?: React.RefObject<SettingsDialog>;
 }
 
 export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomFinderState> {
@@ -37,6 +39,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
       endTime: null,
       showUnavailable: false,
       roomData: [],
+      settingsDialog: React.createRef(),
     };
   }
 
@@ -162,7 +165,13 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     return (
       <div>
         <div style={{ paddingLeft: '16px', paddingRight: '16px', paddingBottom: '10px', borderBottomWidth: '1px',
-                       borderColor: 'rgba(237, 235, 233, 1)', borderBottomStyle: 'solid'}}>        
+                      borderColor: 'rgba(237, 235, 233, 1)', borderBottomStyle: 'solid'}}
+                      onContextMenu={(e) => { 
+                        this.state.settingsDialog.current.showDialog();
+                        e.preventDefault();
+                      }}                
+        >        
+          <SettingsDialog ref={this.state.settingsDialog} />       
           <div className="ms-SearchBoxExample" style={{borderColor: 'rgba(237, 235, 233, 1)'}}>
             <SearchBox
               placeholder="Search by Ad Astra room name"
