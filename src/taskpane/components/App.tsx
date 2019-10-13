@@ -45,18 +45,21 @@ export default class App extends React.Component<AppProps, AppState> {
       showWelcome = defaults.showWelcomeScreen;
       console.log(`Welcome screen setting not set, initializing to ${showWelcome}`);
       this.setState({showIntro: showWelcome});
+      Office.context.roamingSettings.set(WELCOME_SCREEN_SETTTING, showWelcome);
     }
     
     if (useDemoData === undefined) {
       useDemoData = defaults.useSampleData;
       console.log(`Sample data setting not set, initializing to ${useDemoData}`);
       this.setState({useSampleData: useDemoData});
+      Office.context.roamingSettings.set(DEMO_DATA_SETTING, useDemoData);
     }
     
     if (apiPath === undefined) {
       apiPath = defaults.apiBasePath;
       console.log(`API base path setting not set, initializing to ${apiPath}`);
       this.setState({apiBasePath: apiPath});
+      Office.context.roamingSettings.set(API_PATH_SETTING, apiPath);
     }
 
     if (showWelcome === 1) {
