@@ -9,7 +9,7 @@ import { getDefaultSettings } from '../../utilities/config';
 
 export interface ISettingsDialogStates {
   hideDialog: boolean;
-  showIntro: number;
+  showWelcomeScreen: number;
   useSampleData: boolean;
   apiBasePath: string;
 }
@@ -17,7 +17,7 @@ export interface ISettingsDialogStates {
 export default class SettingsDialog extends React.Component<{}, ISettingsDialogStates> {
   public state: ISettingsDialogStates = {
     hideDialog: true,
-    showIntro: Office.context.roamingSettings.get('adastra.showIntro'),
+    showWelcomeScreen: Office.context.roamingSettings.get('adastra.showWelcomeScreen'),
     useSampleData: Office.context.roamingSettings.get('adastra.useSampleData'),
     apiBasePath: Office.context.roamingSettings.get('adastra.apiBasePath'),
   };
@@ -36,10 +36,13 @@ export default class SettingsDialog extends React.Component<{}, ISettingsDialogS
 
   private _restoreDefaults() {
     const defaults = getDefaultSettings();
-    Office.context.roamingSettings.set('adastra.showIntro', defaults.showIntro);
+    Office.context.roamingSettings.set('adastra.showWelcomeScreen', defaults.showWelcomeScreen);
     Office.context.roamingSettings.set('adastra.useSampleData', defaults.useSampleData);
     Office.context.roamingSettings.set('adastra.apiBasePath', defaults.apiBasePath);
-    Office.context.roamingSettings.saveAsync();
+    Office.context.roamingSettings.saveAsync(() => {
+      Office.context.ui.closeContainer();
+    });
+
   };
 
   private _applySetting(setting, value) {
@@ -53,8 +56,8 @@ export default class SettingsDialog extends React.Component<{}, ISettingsDialogS
   };
 
   private _onSetShowWelcomeScreen = (value: number) => {
-    this.setState({ showIntro: value });
-    this._applySetting('adastra.useSampleData', value);
+    this.setState({ showWelcomeScreen: value });
+    this._applySetting('adastra.showWelcomeScreen', value);    
   };
 
   private _onSetUrl = ({}, newValue?: string) => {
@@ -63,7 +66,7 @@ export default class SettingsDialog extends React.Component<{}, ISettingsDialogS
     this._applySetting('adastra.apiBasePath', val);
   };
 
-  private _getShowIntroHintText(value) {
+  private _getShowWelcomeHintText(value) {
     let msg = '';
     switch (value) {
       case 3: 
@@ -96,10 +99,10 @@ export default class SettingsDialog extends React.Component<{}, ISettingsDialogS
           dragOptions: this._dragOptions
         }}
       >
-        <Slider label="Show welcome screen" 
+        <Slider label="Show welcome screen:" 
           min={1} max={3} step={1} 
-          valueFormat={(value: number) => this._getShowIntroHintText(value)} 
-          value={this.state.showIntro}
+          valueFormat={(value: number) => this._getShowWelcomeHintText(value)} 
+          value={this.state.showWelcomeScreen}
           onChange={(value: number) => this._onSetShowWelcomeScreen(value)}
           showValue={true} 
         />

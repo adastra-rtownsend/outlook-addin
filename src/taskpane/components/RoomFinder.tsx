@@ -17,6 +17,8 @@ const stackStyles: IStackStyles = {
 };
 
 export interface IRoomFinderProps {
+  useSampleData: boolean;
+  apiBasePath: string;
 }
 
 export interface IRoomFinderState { 
@@ -81,7 +83,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
 
   retrieveRoomsFromServer = async (startTime, endTime) => {
     var that = this; 
-    var url = `http://localhost:2999/spaces/rooms/availability?start=${startTime}&end=${endTime}`;
+    var url = `${this.props.apiBasePath}/spaces/rooms/availability?start=${startTime}&end=${endTime}`;
     try {
       const response = await axios.get(url);
         that.setState({
@@ -105,11 +107,11 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
           that.setState({endTime: moment(values[1])});
           var startTime = encodeURIComponent(moment(values[0]).format('YYYY-MM-DDTHH:mm:ss'));
           var endTime = encodeURIComponent(moment(values[1]).format('YYYY-MM-DDTHH:mm:ss'));
-          if (false ) {
+          if (that.props.useSampleData) {
+            that. loadRoomsFromExampleData();
+          } else {
             // avaiability is reandomized, so not utilizing startTime and endTime params
             that.retrieveRoomsFromServer(startTime, endTime);
-          } else {
-           that. loadRoomsFromExampleData();
           }
         }
         })
@@ -134,7 +136,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
       var endTime = encodeURIComponent(moment(this.state.endTime).format('YYYY-MM-DDTHH:mm:ss'));
       var roomId = roomData.roomId;
 
-      var url = `http://localhost:2999/spaces/rooms/${roomId}/reservation/?start=${startTime}&end=${endTime}`;
+      var url = `${this.props.apiBasePath}/spaces/rooms/${roomId}/reservation/?start=${startTime}&end=${endTime}`;
       axios.post(url).then(() => {
         that.setState({hasError: false});
         Office.context.mailbox.item.location.setAsync(roomData.text, function (asyncResult) {
