@@ -6,7 +6,7 @@ import { Icon } from 'office-ui-fabric-react/lib/Icon';
 export interface IRoomInfoProps extends IPersonaSharedProps {
   roomId: string;
   available: boolean; 
-  capacity: number;
+  capacity?: number;
 }
 
 // note: this should match to server definition
@@ -29,10 +29,8 @@ export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
     showSecondaryText: true,
     roomId: props.roomInfo.roomId,
     available: (true === props.roomInfo.available),
-    capacity: props.roomInfo.capacity || 24, 
+    capacity: props.roomInfo.capacity,
   };
-
-
   
   return (
     <ActionButton allowDisabledFocus onClick={() => _selectRoom(roomPersona)} style={{ paddingLeft: '16px', paddingRight: '16px', 
@@ -67,10 +65,12 @@ export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
           <Icon iconName={clockIcon} styles={{ root: { marginRight: 5 } }} />
           {text}
         </span>
-        <span>
-          <Icon iconName="Contact" styles={{ root: { marginRight: 5 } }} />
-          <span>{props.capacity}</span> 
-        </span>
+        { props.capacity && 
+          <span>
+            <Icon iconName="Contact" styles={{ root: { marginRight: 5 } }} />
+            <span>{props.capacity}</span> 
+          </span>
+        }          
       </div>
     );
   }; 
