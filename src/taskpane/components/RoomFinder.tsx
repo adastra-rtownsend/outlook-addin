@@ -89,11 +89,11 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     var url = `${this.props.apiBasePath}/spaces/rooms/availability?start=${startTime}&end=${endTime}`;
     try {
       const response = await axios.get(url);
-        that.setState({
-          ...that.state,
-          roomData: response.data,
-          isLoading: false,
-        });
+      that.setState({
+        ...that.state,
+        roomData: response.data,
+        isLoading: false,
+      });
     } catch (error) {
       console.error(error);
       that.setState({isLoading: false});
@@ -111,9 +111,9 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
           var startTime = encodeURIComponent(moment(values[0]).format('YYYY-MM-DDTHH:mm:ss'));
           var endTime = encodeURIComponent(moment(values[1]).format('YYYY-MM-DDTHH:mm:ss'));
           if (that.props.useSampleData) {
-            that. loadRoomsFromExampleData();
-          } else {
             // avaiability is reandomized, so not utilizing startTime and endTime params
+            that.loadRoomsFromExampleData();
+          } else {
             that.retrieveRoomsFromServer(startTime, endTime);
           }
         }
@@ -131,31 +131,61 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     this.setState({hasError: false});
   };
 
+  addRoomToMeeting = (roomName) => {
+    Office.context.mailbox.item.location.setAsync(roomName, function (asyncResult) {
+      if (asyncResult.status == Office.AsyncResultStatus.Failed) {
+          console.log("Error written location in outlook : " + asyncResult.error.message);
+      } else {
+          console.log("Location written in outlook");
+      }
+    });
+  }
+
+  bookRoomFromExampleData = async (roomData) => {
+    var that = this; 
+    that.setState({isBooking: true});
+
+    // induce an artificial 4 second delay
+    setTimeout(function() { 
+      that.setState({
+        ...that.state,
+        isBooking: false,
+        hasError: false, 
+      });
+      that.addRoomToMeeting(roomData.text);
+    }, 4000) 
+  }
+
+  bookRoomOnServer = async (roomData, startTime, endTime) => {
+    var that = this; 
+    this.setState({isBooking: true});
+    var url = `${this.props.apiBasePath}/spaces/rooms/${roomData.roomId}/reservation/?start=${startTime}&end=${endTime}`;
+    try {
+      await axios.get(url);
+      that.setState({
+        ...that.state,
+        isBooking: false,
+        hasError: false, 
+      });
+      that.addRoomToMeeting(roomData.text);
+    } catch (error) {
+      that.setState({isBooking: false});
+      this.setState({hasError: true});
+      console.log(error);
+    }
+  }
+
   onBookRoom = async () => {
     let roomData = Office.context.roamingSettings.get('selectedRoom');
     if (roomData && roomData.text) {
-      var that = this; 
       var startTime = encodeURIComponent(moment(this.state.startTime).format('YYYY-MM-DDTHH:mm:ss'));
       var endTime = encodeURIComponent(moment(this.state.endTime).format('YYYY-MM-DDTHH:mm:ss'));
-      var roomId = roomData.roomId;
 
-      this.setState({isBooking: true});
-      var url = `${this.props.apiBasePath}/spaces/rooms/${roomId}/reservation/?start=${startTime}&end=${endTime}`;
-      try {
-        await axios.get(url);
-        that.setState({isBooking: false});
-        that.setState({hasError: false});
-        Office.context.mailbox.item.location.setAsync(roomData.text, function (asyncResult) {
-          if (asyncResult.status == Office.AsyncResultStatus.Failed) {
-              console.log("Error written location in outlook : " + asyncResult.error.message);
-          } else {
-              console.log("Location written in outlook");
-          }
-        });
-      } catch (error) {
-        that.setState({isBooking: false});
-        this.setState({hasError: true});
-        console.log(error);
+      if (this.props.useSampleData) {
+        this.bookRoomFromExampleData(roomData);
+      } else {
+        // avaiability is reandomized, so not utilizing startTime and endTime params
+        this.bookRoomOnServer(roomData, startTime, endTime);
       }
     }
   };
