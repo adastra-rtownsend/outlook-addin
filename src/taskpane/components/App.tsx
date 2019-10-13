@@ -30,10 +30,6 @@ export default class App extends React.Component<AppProps, AppState> {
   }
 
   _initializeOfficeSettings() {
-    console.log('###### ' + Office.context.roamingSettings.get('adastra.showWelcomeScreen'));
-    console.log('###### ' + Office.context.roamingSettings.get('adastra.useSampleData'));
-    console.log('###### ' + Office.context.roamingSettings.get('adastra.apiBasePath'));
-
     var showWelcome = Office.context.roamingSettings.get('adastra.showWelcomeScreen');
     if (showWelcome === 1) {
       this.setState({showIntro: false});
