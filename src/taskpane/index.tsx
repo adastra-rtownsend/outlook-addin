@@ -4,16 +4,22 @@ import { AppContainer } from 'react-hot-loader';
 import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { Provider } from "react-redux";
+import configureStore from "../store";
 
 initializeIcons();
 
 let isOfficeInitialized = false;
 
+const store = configureStore();
+
 const render = (Component) => {
     ReactDOM.render(
-        <AppContainer>
-            <Component isOfficeInitialized={isOfficeInitialized} />
-        </AppContainer>,
+        <Provider store={store}>
+            <AppContainer>
+                <Component isOfficeInitialized={isOfficeInitialized} />
+            </AppContainer>,
+        </Provider>
         document.getElementById('container')
     );
 };
