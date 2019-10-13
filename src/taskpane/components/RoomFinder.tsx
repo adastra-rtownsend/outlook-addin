@@ -23,6 +23,7 @@ export interface IRoomFinderProps {
 
 export interface IRoomFinderState { 
   isLoading: boolean;
+  isBooking: boolean;
   hasError: boolean;
   startTime: any;
   endTime: any;
@@ -36,6 +37,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     super(props, context);
     this.state = {
       isLoading: false,
+      isBooking: false,
       hasError: false, 
       startTime: null,
       endTime: null,
@@ -83,6 +85,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
 
   retrieveRoomsFromServer = async (startTime, endTime) => {
     var that = this; 
+    that.setState({isLoading: true});
     var url = `${this.props.apiBasePath}/spaces/rooms/availability?start=${startTime}&end=${endTime}`;
     try {
       const response = await axios.get(url);
@@ -128,7 +131,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     this.setState({hasError: false});
   };
 
-  onBookRoom = () => {
+  onBookRoom = async () => {
     let roomData = Office.context.roamingSettings.get('selectedRoom');
     if (roomData && roomData.text) {
       var that = this; 
@@ -136,8 +139,11 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
       var endTime = encodeURIComponent(moment(this.state.endTime).format('YYYY-MM-DDTHH:mm:ss'));
       var roomId = roomData.roomId;
 
+      this.setState({isBooking: true});
       var url = `${this.props.apiBasePath}/spaces/rooms/${roomId}/reservation/?start=${startTime}&end=${endTime}`;
-      axios.post(url).then(() => {
+      try {
+        await axios.get(url);
+        that.setState({isBooking: false});
         that.setState({hasError: false});
         Office.context.mailbox.item.location.setAsync(roomData.text, function (asyncResult) {
           if (asyncResult.status == Office.AsyncResultStatus.Failed) {
@@ -146,10 +152,11 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
               console.log("Location written in outlook");
           }
         });
-      }).catch(error => {
+      } catch (error) {
+        that.setState({isBooking: false});
         this.setState({hasError: true});
         console.log(error);
-      }); // todo neeed error handling, shouldn't jsut assume API succeeds                
+      }
     }
   };
 
@@ -158,7 +165,16 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
       return (
         <Stack grow>
           <Stack verticalAlign="center" styles={stackStyles}>
-          <Spinner size={SpinnerSize.large} label="Loading room data" ariaLive="assertive" labelPosition="right" />
+            <Spinner size={SpinnerSize.large} label="Loading room data" ariaLive="assertive" labelPosition="right" />
+          </Stack>
+        </Stack>
+      )
+    }
+    else if (this.state.isBooking) {
+      return (
+        <Stack grow>
+          <Stack verticalAlign="center" styles={stackStyles}>
+            <Spinner size={SpinnerSize.large} label="Reserving room in Ad Astra" ariaLive="assertive" labelPosition="right" />
           </Stack>
         </Stack>
       )
