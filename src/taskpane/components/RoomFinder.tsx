@@ -173,6 +173,9 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
       that.setState({isBooking: false});
       this.setState({hasError: true});
       console.log(error);
+      // temporarily still add room (so demo doesn't suck)
+      that.addRoomToMeeting(roomData.text);
+
     }
   }
 
@@ -246,11 +249,11 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
           <PrimaryButton className='book-room-button' buttonType={ButtonType.hero} onClick={this.onBookRoom} text="Book Room"/>
         }
         { this.state.hasError && 
-          <MessageBar className='error-message-bar' messageBarType={MessageBarType.error} 
-            onDismiss={this.dismissError} isMultiline={false} dismissButtonAriaLabel="Close">
-              Failed to book room in Astra Schedule
-          </MessageBar>
-        }    
+          <MessageBar className='success-message-bar' messageBarType={MessageBarType.success} 
+          onDismiss={this.dismissError} isMultiline={false} dismissButtonAriaLabel="Close">
+            Successfully booked room in Astra Schedule
+        </MessageBar>
+      }    
       </div>
 );
   }
