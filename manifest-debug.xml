@@ -8,7 +8,7 @@
   <Version>0.1.0.0</Version>
   <ProviderName>Ad Astra</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Ad Astra (Debug)"/>
+  <DisplayName DefaultValue="Ad Astra (Dev)"/>
   <Description DefaultValue="Find and book available rooms in Ad Astra"/>
   <IconUrl DefaultValue="https://aais-public-brand-assets.s3.amazonaws.com/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://aais-public-brand-assets.s3.amazonaws.com/icon-80.png"/>
@@ -82,8 +82,8 @@
         <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/taskpane.html" />
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GroupLabel" DefaultValue="Ad Astra Add-in (Debug)"/>
-        <bt:String id="TaskpaneButton.Label" DefaultValue="Ad Astra (Debug)"/>
+        <bt:String id="GroupLabel" DefaultValue="Ad Astra Add-in (Dev)"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="Ad Astra (Dev)"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Manage rooms in Ad Astra"/>

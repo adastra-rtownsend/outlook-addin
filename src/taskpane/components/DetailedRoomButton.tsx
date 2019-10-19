@@ -2,37 +2,39 @@ import * as React from 'react';
 import { IPersonaSharedProps, Persona, PersonaSize, PersonaPresence } from 'office-ui-fabric-react/lib/Persona';
 import { ActionButton } from 'office-ui-fabric-react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
-// import { IExampleItem } from '../../utilities/exampleData';
+import { SELECTED_ROOM_SETTING } from '../../utilities/config';
 
 export interface IRoomInfoProps extends IPersonaSharedProps {
-  available: boolean, 
-  capacity: number
+  roomId: string;
+  available: boolean; 
+  capacity?: number;
 }
 
-export interface IRoomInfo {
-  key: string;
-  roomName: string;
-  roomBuilding: string;
-  roomNumber: string;
+// note: this should match to server definition
+export interface ISourceRoomInfo {
+  roomId: string;
+  roomBuildingAndNumber: string;
+  whyIsRoomIdHereTwice: string;
   available: boolean;
-  capacity: number;
-};
+  capacity?: number;
+}
 
-interface IRoomButtonProps {
-  roomInfo: IRoomInfo,
+export interface IRoomButtonProps {
+  roomInfo: ISourceRoomInfo;
  }
 
 export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
   const roomPersona: IRoomInfoProps = {
     showUnknownPersonaCoin: true,
-    text: `${props.roomInfo.roomBuilding} - ${props.roomInfo.roomNumber}`,
+    text: props.roomInfo.roomBuildingAndNumber,
     showSecondaryText: true,
+    roomId: props.roomInfo.roomId,
     available: (true === props.roomInfo.available),
     capacity: props.roomInfo.capacity,
   };
   
   return (
-    <ActionButton allowDisabledFocus onClick={() => _addLocation(roomPersona.text)} style={{ paddingLeft: '16px', paddingRight: '16px', 
+    <ActionButton allowDisabledFocus onClick={() => _selectRoom(roomPersona)} style={{ paddingLeft: '16px', paddingRight: '16px', 
                   paddingBottom: '9px', paddingTop: '9px', height: 'auto'}}>
       <Persona {...roomPersona} size={PersonaSize.size32} presence={PersonaPresence.none} 
           onRenderSecondaryText={_onRenderSecondaryText}
@@ -64,21 +66,18 @@ export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
           <Icon iconName={clockIcon} styles={{ root: { marginRight: 5 } }} />
           {text}
         </span>
-        <span>
-          <Icon iconName="Contact" styles={{ root: { marginRight: 5 } }} />
-          <span>{props.capacity}</span> 
-        </span>
+        { props.capacity && 
+          <span>
+            <Icon iconName="Contact" styles={{ root: { marginRight: 5 } }} />
+            <span>{props.capacity}</span> 
+          </span>
+        }          
       </div>
     );
   }; 
+
+  function _selectRoom(roomData): void {  
+    Office.context.roamingSettings.set(SELECTED_ROOM_SETTING, roomData);
+  };
 };
 
-function _addLocation(roomName): void {  
-  Office.context.mailbox.item.location.setAsync(roomName, function (asyncResult) {
-    if (asyncResult.status == Office.AsyncResultStatus.Failed) {
-        console.log("Error written location in outlook : " + asyncResult.error.message);
-    } else {
-        console.log("Location written in outlook");
-    }
-  });
-};
