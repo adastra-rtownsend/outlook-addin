@@ -35,43 +35,51 @@ export default class App extends React.Component<AppProps, AppState> {
 
   _initializeOfficeSettings() {
 
-    var defaults = getDefaultSettings();
+    const defaults = getDefaultSettings();
 
-    var showWelcome = Office.context.roamingSettings.get(WELCOME_SCREEN_SETTTING);
-    var useDemoData = Office.context.roamingSettings.get(DEMO_DATA_SETTING);
-    var apiPath = Office.context.roamingSettings.get(API_PATH_SETTING);
+    let showWelcome = Office.context.roamingSettings.get(WELCOME_SCREEN_SETTTING);
+    let useDemoData = Office.context.roamingSettings.get(DEMO_DATA_SETTING);
+    let apiPath = Office.context.roamingSettings.get(API_PATH_SETTING);
+    let showIntro = true; 
 
     if (showWelcome === undefined) {
       showWelcome = defaults.showWelcomeScreen;
       console.log(`Welcome screen setting not set, initializing to ${showWelcome}`);
-      this.setState({showIntro: showWelcome});
     }
     
     if (useDemoData === undefined) {
       useDemoData = defaults.useSampleData;
       console.log(`Sample data setting not set, initializing to ${useDemoData}`);
-      this.setState({useSampleData: useDemoData});
     }
     
     if (apiPath === undefined) {
       apiPath = defaults.apiBasePath;
       console.log(`API base path setting not set, initializing to ${apiPath}`);
-      this.setState({apiBasePath: apiPath});
     }
 
     if (showWelcome === 1) {
-      this.setState({showIntro: false});
+      showIntro = false;
     } else if (showWelcome === 2) {
-      this.setState({showIntro: true});
-      Office.context.roamingSettings.set(WELCOME_SCREEN_SETTTING, 1); // set to 'never' so it won't show next time
+      showIntro = true;
+      showWelcome = 1;
     } else {
-      this.setState({showIntro: true});
+      showIntro = true;
     }
 
-    // some changes may have occured, so sync the settings
     var that = this;
-    Office.context.roamingSettings.saveAsync(() => {
-      that.setState({officeSettingsInitializationState: 2});
+    Office.context.roamingSettings.set(WELCOME_SCREEN_SETTTING, showWelcome);
+    Office.context.roamingSettings.set(DEMO_DATA_SETTING, useDemoData);
+    Office.context.roamingSettings.set(API_PATH_SETTING, apiPath);
+
+    this.setState({
+      showIntro: showIntro,
+      useSampleData: useDemoData,
+      apiBasePath: apiPath,
+    }, () => { 
+      // some changes may have occured, so sync the settings
+      Office.context.roamingSettings.saveAsync(() => {
+        that.setState({officeSettingsInitializationState: 2});
+      });  
     });
   }
 
