@@ -5,37 +5,34 @@ import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { SELECTED_ROOM_SETTING } from '../../utilities/config';
 
 export interface IRoomInfoProps extends IPersonaSharedProps {
-  roomId: string;
-  available: boolean; 
-  capacity?: number;
+  available: boolean, 
+  capacity: number
 }
 
-// note: this should match to server definition
-export interface ISourceRoomInfo {
-  roomId: string;
-  roomBuildingAndNumber: string;
-  whyIsRoomIdHereTwice: string;
-  available: boolean;
-  capacity?: number;
-}
-
+// todo extra the data shape out, doing this here tightly couples the props for this componey and the API data shape
 export interface IRoomButtonProps {
-  roomInfo: ISourceRoomInfo;
+  roomInfo: {
+    roomId: string;
+    roomBuildingAndNumber: string;
+    whyIsRoomIdHereTwice: string;
+    available: boolean;
+  }
+  checked?: boolean;
  }
 
 export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
   const roomPersona: IRoomInfoProps = {
     showUnknownPersonaCoin: true,
+    roomId: props.roomInfo.roomId,
     text: props.roomInfo.roomBuildingAndNumber,
     showSecondaryText: true,
-    roomId: props.roomInfo.roomId,
     available: (true === props.roomInfo.available),
     capacity: props.roomInfo.capacity,
   };
   
   return (
     <ActionButton allowDisabledFocus onClick={() => _selectRoom(roomPersona)} style={{ paddingLeft: '16px', paddingRight: '16px', 
-                  paddingBottom: '9px', paddingTop: '9px', height: 'auto'}}>
+                  paddingBottom: '9px', paddingTop: '9px', height: 'auto'}} checked={props.checked}>
       <Persona {...roomPersona} size={PersonaSize.size32} presence={PersonaPresence.none} 
           onRenderSecondaryText={_onRenderSecondaryText}
           onRenderInitials ={_onRenderInitials} />
