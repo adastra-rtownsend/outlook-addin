@@ -9,7 +9,6 @@ import * as moment from 'moment';
 import { MessageBar, MessageBarType } from 'office-ui-fabric-react';
 import { createListItems } from '../../utilities/exampleData';
 import SettingsDialog from './SettingsDialog';
-import { SELECTED_ROOM_SETTING } from '../../utilities/config';
 
 const stackStyles: IStackStyles = {
   root: {
@@ -18,13 +17,10 @@ const stackStyles: IStackStyles = {
 };
 
 export interface IRoomFinderProps {
-  useSampleData: boolean;
-  apiBasePath: string;
 }
 
 export interface IRoomFinderState { 
   isLoading: boolean;
-  isBooking: boolean;
   hasError: boolean;
   startTime: any;
   endTime: any;
@@ -38,7 +34,6 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     super(props, context);
     this.state = {
       isLoading: false,
-      isBooking: false,
       hasError: false, 
       startTime: null,
       endTime: null,
@@ -86,15 +81,14 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
 
   retrieveRoomsFromServer = async (startTime, endTime) => {
     var that = this; 
-    that.setState({isLoading: true});
-    var url = `${this.props.apiBasePath}/spaces/rooms/availability?start=${startTime}&end=${endTime}`;
+    var url = `http://localhost:2999/spaces/rooms/availability?start=${startTime}&end=${endTime}`;
     try {
       const response = await axios.get(url);
-      that.setState({
-        ...that.state,
-        roomData: response.data,
-        isLoading: false,
-      });
+        that.setState({
+          ...that.state,
+          roomData: response.data,
+          isLoading: false,
+        });
     } catch (error) {
       console.error(error);
       that.setState({isLoading: false});
@@ -111,11 +105,11 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
           that.setState({endTime: moment(values[1])});
           var startTime = encodeURIComponent(moment(values[0]).format('YYYY-MM-DDTHH:mm:ss'));
           var endTime = encodeURIComponent(moment(values[1]).format('YYYY-MM-DDTHH:mm:ss'));
-          if (that.props.useSampleData) {
+          if (false ) {
             // avaiability is reandomized, so not utilizing startTime and endTime params
-            that.loadRoomsFromExampleData();
-          } else {
             that.retrieveRoomsFromServer(startTime, endTime);
+          } else {
+           that. loadRoomsFromExampleData();
           }
         }
         })
@@ -132,65 +126,28 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     this.setState({hasError: false});
   };
 
-  addRoomToMeeting = (roomName) => {
-    Office.context.mailbox.item.location.setAsync(roomName, function (asyncResult) {
-      if (asyncResult.status == Office.AsyncResultStatus.Failed) {
-          console.log("Error written location in outlook : " + asyncResult.error.message);
-      } else {
-          console.log("Location written in outlook");
-      }
-    });
-  }
-
-  bookRoomFromExampleData = async (roomData) => {
-    var that = this; 
-    that.setState({isBooking: true});
-
-    // induce an artificial 4 second delay
-    setTimeout(function() { 
-      that.setState({
-        ...that.state,
-        isBooking: false,
-        hasError: false, 
-      });
-      that.addRoomToMeeting(roomData.text);
-    }, 4000) 
-  }
-
-  bookRoomOnServer = async (roomData, startTime, endTime) => {
-    var that = this; 
-    this.setState({isBooking: true});
-    var url = `${this.props.apiBasePath}/spaces/rooms/${roomData.roomId}/reservation/?start=${startTime}&end=${endTime}`;
-    try {
-      await axios.get(url);
-      that.setState({
-        ...that.state,
-        isBooking: false,
-        hasError: false, 
-      });
-      that.addRoomToMeeting(roomData.text);
-    } catch (error) {
-      that.setState({isBooking: false});
-      this.setState({hasError: true});
-      console.log(error);
-      // temporarily still add room (so demo doesn't suck)
-      that.addRoomToMeeting(roomData.text);
-
-    }
-  }
-
-  onBookRoom = async () => {
-    let roomData = Office.context.roamingSettings.get(SELECTED_ROOM_SETTING);
+  onBookRoom = () => {
+    let roomData = Office.context.roamingSettings.get('selectedRoom');
     if (roomData && roomData.text) {
+      var that = this; 
       var startTime = encodeURIComponent(moment(this.state.startTime).format('YYYY-MM-DDTHH:mm:ss'));
       var endTime = encodeURIComponent(moment(this.state.endTime).format('YYYY-MM-DDTHH:mm:ss'));
+      var roomId = roomData.roomId;
 
-      if (this.props.useSampleData) {
-        this.bookRoomFromExampleData(roomData);
-      } else {
-        // avaiability is reandomized, so not utilizing startTime and endTime params
-        this.bookRoomOnServer(roomData, startTime, endTime);
-      }
+      var url = `http://localhost:2999/spaces/rooms/${roomId}/reservation/?start=${startTime}&end=${endTime}`;
+      axios.post(url).then(() => {
+        that.setState({hasError: false});
+        Office.context.mailbox.item.location.setAsync(roomData.text, function (asyncResult) {
+          if (asyncResult.status == Office.AsyncResultStatus.Failed) {
+              console.log("Error written location in outlook : " + asyncResult.error.message);
+          } else {
+              console.log("Location written in outlook");
+          }
+        });
+      }).catch(error => {
+        this.setState({hasError: true});
+        console.log(error);
+      }); // todo neeed error handling, shouldn't jsut assume API succeeds                
     }
   };
 
@@ -199,16 +156,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
       return (
         <Stack grow>
           <Stack verticalAlign="center" styles={stackStyles}>
-            <Spinner size={SpinnerSize.large} label="Loading room data" ariaLive="assertive" labelPosition="right" />
-          </Stack>
-        </Stack>
-      )
-    }
-    else if (this.state.isBooking) {
-      return (
-        <Stack grow>
-          <Stack verticalAlign="center" styles={stackStyles}>
-            <Spinner size={SpinnerSize.large} label="Reserving room in Ad Astra" ariaLive="assertive" labelPosition="right" />
+          <Spinner size={SpinnerSize.large} label="Loading room data" ariaLive="assertive" labelPosition="right" />
           </Stack>
         </Stack>
       )
@@ -249,11 +197,11 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
           <PrimaryButton className='book-room-button' buttonType={ButtonType.hero} onClick={this.onBookRoom} text="Book Room"/>
         }
         { this.state.hasError && 
-          <MessageBar className='success-message-bar' messageBarType={MessageBarType.success} 
-          onDismiss={this.dismissError} isMultiline={false} dismissButtonAriaLabel="Close">
-            Successfully booked room in Astra Schedule
-        </MessageBar>
-      }    
+          <MessageBar className='error-message-bar' messageBarType={MessageBarType.error} 
+            onDismiss={this.dismissError} isMultiline={false} dismissButtonAriaLabel="Close">
+              Failed to book room in Astra Schedule
+          </MessageBar>
+        }    
       </div>
 );
   }
