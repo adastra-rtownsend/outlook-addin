@@ -86,6 +86,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
                 response.data.forEach((room) => {
                   roomData.push({
                     ...room,
+                    capacity: capacity[room.id].capacity
                   });
                 });
                 that.setState({isLoading: false});

@@ -14,6 +14,7 @@ const DATA = {
 export interface IExampleItem {
   key: string;
   roomName: string;
+  roomBuildingAndNumber: string;
   available: boolean;
   capacity: number;
 };
@@ -21,9 +22,13 @@ export interface IExampleItem {
 export function createListItems(count: number, startIndex: number = 0): IRoomInfo[] {
   return Array.apply(null, Array(count)).map((item: number, index: number) => {
 
+    var roomName = _randWord(DATA.roomNames);
+
     return {
       key: 'item-' + (index + startIndex) + (item === undefined ? '-empty' : '-not empty'),
-      roomName: _randWord(DATA.roomNames),
+      roomId: 'room-' + index,
+      roomName: roomName,
+      roomBuildingAndNumber: roomName, // same as roomName for now
       available: 'true' ===_randWord(DATA.available),
       capacity: _randNumber(4, 24)
     };
