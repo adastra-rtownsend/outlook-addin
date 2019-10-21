@@ -16,6 +16,7 @@ export interface IRoomButtonProps {
     roomBuildingAndNumber: string;
     whyIsRoomIdHereTwice: string;
     available: boolean;
+    capacity: number;
   }
   checked?: boolean;
  }
@@ -23,7 +24,7 @@ export interface IRoomButtonProps {
 export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
   const roomPersona: IRoomInfoProps = {
     showUnknownPersonaCoin: true,
-    roomId: props.roomInfo.roomId,
+    // roomId: props.roomInfo.roomId,
     text: props.roomInfo.roomBuildingAndNumber,
     showSecondaryText: true,
     available: (true === props.roomInfo.available),

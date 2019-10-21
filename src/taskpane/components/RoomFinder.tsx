@@ -7,11 +7,8 @@ import { Spinner, SpinnerSize, PrimaryButton, ButtonType } from 'office-ui-fabri
 import { Stack, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
 import * as moment from 'moment';
 import { MessageBar, MessageBarType } from 'office-ui-fabric-react';
-<<<<<<< HEAD
-import { createListItems } from '../../utilities/exampleData';
 import SettingsDialog from './SettingsDialog';
-=======
->>>>>>> parent of 20f55ff... temporarily switching back to example data
+import { number } from 'prop-types';
 
 const stackStyles: IStackStyles = {
   root: {
@@ -71,6 +68,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
   refreshRoomInfo = async (force) => {
     var that = this; 
     var item = Office.context.mailbox.item;
+
     Promise.all([that.makePromise(item.start), that.makePromise(item.end)])
       .then(function(values) {
         if (force || !moment(values[0]).isSame(that.state.startTime) || !moment(values[1]).isSame(that.state.endTime)) {
@@ -82,11 +80,20 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
           var url = `http://localhost:2999/spaces/rooms/availability?start=${startTime}&end=${endTime}`;
           axios.get(url)
             .then(response => {
-              that.setState({isLoading: false});
-              that.setState({
-                ...that.state,
-                roomData: response.data
-              });
+              this.getCapacity().then(capacity => {
+                console.log(capacity)
+                const roomData = []
+                response.data.forEach((room) => {
+                  roomData.push({
+                    ...room,
+                  });
+                });
+                that.setState({isLoading: false});
+                that.setState({
+                  ...that.state,
+                  roomData
+                });
+              // });
             }); // todo neeed error handling, shouldn't jsut assume API succeeds
           }
         })
@@ -95,6 +102,35 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
         that.setState({isLoading: false});
       });
   }
+  
+  getCapacity() {
+    let capacity = {};
+
+    // Async way
+    // try {
+    //   const response = await axios.get('http://localhost:2999/facilities/roomlist?filtertype=equals_%2F_in')
+    //   response.data.forEach((room) => {
+    //     capacity.push(room[9]);
+    //   });
+
+    //   return capacity;
+    // } catch (err) {
+    //   return err
+    // }
+
+    return new Promise((resolve, reject) => {
+      axios.get('http://localhost:2999/facilities/roomlist?filtertype=equals_%2F_in').then(response => {
+        response.data.forEach((room) => {
+          capacity[room["roomId"]] = {
+            capacity: room["maxOccupancy"]
+          }
+        });
+        resolve(capacity);
+      }).catch(err => {
+        reject(err);
+      });
+    });
+  };
 
   onToggleChange = ({}, checked: boolean) => {
     this.setState({showUnavailable: !checked});
