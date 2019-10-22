@@ -1,0 +1,25 @@
+  getActivities() {
+    let mapRoomtoActivity = {};
+    axios.get('https://qeapp/SG86044Merced/~api/calendar/activityList?fields=ActivityId%2CActivityName%2CStartDate%2CActivityTypeCode%2CCampusName%2CBuildingCode%2CRoomNumber%2CLocationName%2CStartDateTime%2CEndDateTime%2CInstructorName%3Astrjoin2(%22%20%22%2C%20%22%20%22%2C%20%22%20%22)%2CDays%3Astrjoin2(%22%20%22%2C%20%22%20%22%2C%20%22%20%22)%2CCanView%3Astrjoin2(%22%20%22%2C%20%22%20%22%2C%20%22%20%22)%2CSectionId%2CEventId%2CEventImage%3Astrjoin2(%22%20%22%2C%20%22%20%22%2C%20%22%20%22)%2CParentActivityId%2CParentActivityName%2CEventMeetingByActivityId%2EEvent%2EEventType%2EName%2CEventMeetingByActivityId%2EEventMeetingType%2EName%2CSectionMeetInstanceByActivityId%2ESectionMeeting%2EMeetingType%2EName%2CLocation%2ERoomId&filter=(((StartDateTime<%3D"2019-10-07T15%3A00%3A00")%26%26(EndDateTime>%3D"2019-10-07T14%3A00%3A00"))%7C%7C((StartDateTime>%3D"2019-10-07T14%3A00%3A00")%26%26(StartDateTime<%3D"2019-10-07T15%3A00%3A00")))&allowUnlimitedResults=false&sort=StartDateTime&page=1&start=0').then(response => {
+      response.data.data.forEach((d: any[]) => {
+        mapRoomtoActivity[d[21]] = true;
+        });
+      });
+      return mapRoomtoActivity
+    }
+
+  getAvailableRooms() {
+    let items = []
+    const activities = this.getActivities();
+    axios.get('https://qeapp/SG86044Merced/~api/search/room?_dc=1570564904737&start=0&limit=5000&_s=1&fields=RowNumber%2CId%2CRoomName%2CRoomDescription%2CRoomNumber%2CRoomTypeName%2CBuildingCode%2CBuildingName%2CCampusName%2CCapacity%2CBuildingRoomNumberRoomName%2CEffectiveDateId%2CCanEdit%2CCanDelete&sortOrder=%2BBuildingRoomNumberRoomName&sort=%5B%7B%22property%22%3A%22BuildingRoomNumberRoomName%22%2C%22direction%22%3A%22ASC%22%7D%5D').then(response => {
+      response.data.data.forEach((d: any[]) => {
+        items.push({
+          key: d[0],
+          id: d[1],
+          roomName: d[2],
+          roomNumber: d[4],
+          roomBuilding: d[7],
+          available: typeof activities[d[1]] === 'undefined',
+          capacity: d[9]
+        })
+      });

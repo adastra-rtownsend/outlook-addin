@@ -89,13 +89,13 @@ b {
 
 .scroll-container {
     overflow: auto;
-    max-height: 500px;
+    max-height: 80vh;
     margin-top: 20px;
 }
 
-.ms-Persona-initials.initials-134 {
-    color: #ffffff;
-    background: #0078d4;
+.ms-Persona-initials {
+    color: #ffffff !important;
+    background: #0078d4 !important;
 }
 
 .available-text {
@@ -106,4 +106,17 @@ b {
 .unavailable-text {
     color: #e81123;
     padding-right: 6px;
+}
+
+.book-room-button {
+    position: absolute !important; 
+    right: 10px;
+    bottom: 10px;
+}
+
+.error-message-bar {
+    position: absolute !important;
+    right: 0;
+    bottom: 0;
+    z-index: 99;
 }
