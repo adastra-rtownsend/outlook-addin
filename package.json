@@ -9,14 +9,14 @@
   "config": {
     "app-to-debug": "outlook",
     "app-type-to-debug": "desktop",
-    "dev-server-port": 3000
+    "dev-server-port": 3003
   },
   "scripts": {
     "build": "webpack -p --mode production --https false",
     "build:dev": "webpack --mode development --https false",
     "build-dev": "webpack --mode development --https false && echo . && echo . && echo . && echo Please use 'build:dev' instead of 'build-dev'.",
     "dev-server": "webpack-dev-server --mode development",
-    "start": "office-addin-debugging start manifest.xml",
+    "start": "office-addin-debugging start manifest-debug.xml",
     "start:desktop": "office-addin-debugging start manifest.xml desktop",
     "start:web": "office-addin-debugging start manifest.xml web",
     "stop": "office-addin-debugging stop manifest.xml",

@@ -8,7 +8,7 @@ import { Stack, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
 import * as moment from 'moment';
 import { MessageBar, MessageBarType } from 'office-ui-fabric-react';
 import SettingsDialog from './SettingsDialog';
-// import { number } from 'prop-types';
+import { number } from 'prop-types';
 
 const stackStyles: IStackStyles = {
   root: {
@@ -80,13 +80,13 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
           var url = `http://localhost:2999/spaces/rooms/availability?start=${startTime}&end=${endTime}`;
           axios.get(url)
             .then(response => {
-              this.getCapacity().then(capacity => {
-                alert(JSON.stringify(capacity))
+              // this.getCapacity().then(capacity => {
+              //   console.log(capacity)
                 const roomData = []
                 response.data.forEach((room) => {
                   roomData.push({
                     ...room,
-                    capacity: room[room.roomId].capacity
+                    capacity: 123
                   });
                 });
                 that.setState({isLoading: false});
@@ -111,7 +111,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     // try {
     //   const response = await axios.get('http://localhost:2999/facilities/roomlist?filtertype=equals_%2F_in')
     //   response.data.forEach((room) => {
-    //     capacity.push(room["maxOccupancy"]);
+    //     capacity.push(room[9]);
     //   });
 
     //   return capacity;
