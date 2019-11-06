@@ -32,6 +32,9 @@ const classNames: IListBasicExampleClassObject = mergeStyleSets({
       }
     }
   ],
+  emptyList: [
+
+  ]
 });
 
 export default class RoomList extends React.Component<IRoomListProps, IRoomListState> {
@@ -50,13 +53,23 @@ export default class RoomList extends React.Component<IRoomListProps, IRoomListS
       items = items.filter(item => item.available === true);
     }
 
-    return (
-      <FocusZone direction={FocusZoneDirection.vertical}>
-        <div className='scroll-container' data-is-scrollable={true}>
-          <List items={items} getPageHeight={this._getPageHeight} onRenderCell={this._onRenderCell} />
+    if (items.length > 0) {
+      return (
+        <FocusZone direction={FocusZoneDirection.vertical}>
+          <div className='scroll-container' data-is-scrollable={true}>
+            <List items={items} getPageHeight={this._getPageHeight} onRenderCell={this._onRenderCell} />
+          </div>
+        </FocusZone>
+      );
+    } else {
+      return (
+        <div className='empty-rooms-list'
+             style={{ marginTop: '13px', marginBottom: '5px', marginLeft: '10px'}}
+        >
+          <h3>We couldn't find any rooms</h3>
         </div>
-      </FocusZone>
-    );
+      );
+    }
   }
 
   private _getPageHeight(idx: number): number {
