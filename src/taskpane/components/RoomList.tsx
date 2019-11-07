@@ -3,6 +3,7 @@ import { FocusZone, FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZ
 import { List } from 'office-ui-fabric-react/lib/List';
 import { DetailedRoomButton, ISourceRoomInfo } from './DetailedRoomButton';
 import { ITheme, mergeStyleSets, getTheme, getFocusStyle } from 'office-ui-fabric-react/lib/Styling';
+import { SELECTED_ROOM_SETTING } from '../../utilities/config';
 
 export interface IRoomListProps {
   items: ISourceRoomInfo[];
@@ -93,19 +94,29 @@ export default class RoomList extends React.Component<IRoomListProps, IRoomListS
   };
 
   private onClickItem = (clickedItem: DetailedRoomButton) => {
-    console.log('item clicked!');
-    if (clickedItem === this.state.selectedItem) {
-      this.setState({ selectedItem: null });
-      clickedItem.setState({ selected: !clickedItem.state.selected });
-    } else if (this.state.selectedItem === null) {
+    if (this.state.selectedItem === null) { // no currently selected item
       this.setState({ selectedItem: clickedItem });
       clickedItem.setState({ selected: !clickedItem.state.selected });
-    } else {
+      this._selectRoom(clickedItem.roomPersona);
+    } else if (clickedItem === this.state.selectedItem) { // unselect selected item
+      this.setState({ selectedItem: null });
+      clickedItem.setState({ selected: !clickedItem.state.selected });
+      this._unselectRoom();
+    } else { // select different item
       this.state.selectedItem.setState({ selected: false });
       this.setState({ selectedItem: clickedItem });
       clickedItem.setState({ selected: !clickedItem.state.selected });
+      this._selectRoom(clickedItem.roomPersona);
     }
-
-    //clickedItem.state.selected = !clickedItem.state.selected;
   }
+
+  _selectRoom(roomData): void {
+    Office.context.roamingSettings.set(SELECTED_ROOM_SETTING, roomData);
+    console.log(`selected room. SELECTED_ROOM_SETTING = ${JSON.stringify(Office.context.roamingSettings.get(SELECTED_ROOM_SETTING), null, 2)}`);
+  };
+
+  _unselectRoom(): void {
+    Office.context.roamingSettings.remove(SELECTED_ROOM_SETTING);
+    console.log(`unselected room. SELECTED_ROOM_SETTING = ${JSON.stringify(Office.context.roamingSettings.get(SELECTED_ROOM_SETTING), null, 2)}`);
+  };
 }
