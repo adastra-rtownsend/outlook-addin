@@ -8,7 +8,6 @@ export interface IRoomInfoProps extends IPersonaSharedProps {
   roomId: string;
   available: boolean;
   capacity?: number;
-  selected: boolean;
 }
 
 // note: this should match to server definition
@@ -22,42 +21,55 @@ export interface ISourceRoomInfo {
 
 export interface IRoomButtonProps {
   roomInfo: ISourceRoomInfo;
- }
+}
 
-export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
-  const roomPersona: IRoomInfoProps = {
+export interface IRoomButtonState {
+  selected: boolean;
+}
+
+export default class DetailedRoomButton extends React.Component<IRoomButtonProps, IRoomButtonState> {
+  constructor(props: IRoomButtonProps) {
+    super(props);
+
+    this.state = {
+      selected: false,
+    }
+  }
+
+  roomPersona: IRoomInfoProps = {
     showUnknownPersonaCoin: true,
-    text: props.roomInfo.roomBuildingAndNumber,
+    text: this.props.roomInfo.roomBuildingAndNumber,
     showSecondaryText: true,
-    roomId: props.roomInfo.roomId,
-    available: (true === props.roomInfo.available),
-    capacity: props.roomInfo.capacity,
-    selected: false,
-  };
+    roomId: this.props.roomInfo.roomId,
+    available: (true === this.props.roomInfo.available),
+    capacity: this.props.roomInfo.capacity,
+  }
 
-  return (
-    // checked={roomPersona.selected}
-    <CompoundButton checked={roomPersona.selected} allowDisabledFocus onClick={() => _selectRoom(roomPersona) } style={{
-                  paddingBottom: '9px', paddingTop: '9px', height: 'auto', width: '100%',
-                  borderStyle: 'none', alignItems: 'start', textAlign: 'left', maxWidth: '500px'
-                  }}>
-      <Persona {...roomPersona} size={PersonaSize.size32} presence={PersonaPresence.none}
-          onRenderSecondaryText={_onRenderSecondaryText}
-          onRenderInitials ={_onRenderInitials}
-          style={{
+  public render() {
+    return (
+      // checked={roomPersona.selected}
+      <CompoundButton checked={this.state.selected} allowDisabledFocus onClick={() => this._selectRoom(this.roomPersona) } style={{
+                    paddingBottom: '9px', paddingTop: '9px', height: 'auto', width: '100%',
+                    borderStyle: 'none', alignItems: 'start', textAlign: 'left', maxWidth: '500px'
+                    }}>
+        <Persona {...this.roomPersona} size={PersonaSize.size32} presence={PersonaPresence.none}
+            onRenderSecondaryText={this._onRenderSecondaryText}
+            onRenderInitials ={this._onRenderInitials}
+            style={{
 
-          }}
-          />
-    </CompoundButton>
-  );
+            }}
+            />
+      </CompoundButton>
+    );
+  }
 
-  function _onRenderInitials(): JSX.Element {
+  _onRenderInitials(): JSX.Element {
     return (
       <Icon iconName="Room"/>
     );
   };
 
-  function _onRenderSecondaryText(props: IRoomInfoProps): JSX.Element {
+  _onRenderSecondaryText(props: IRoomInfoProps): JSX.Element {
 
     let clockIcon = 'Clock';
     let text = 'Available';
@@ -85,12 +97,42 @@ export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
     );
   };
 
-  function _selectRoom(roomData): void {
+  _selectRoom(roomData): void {
     console.log(JSON.stringify(roomData, null, 2));
     const was = roomData.selected;
     roomData.selected = was ? false : true;
     //console.log(`inside _selectRoom. roomData.selected was=${was} now=${!roomData.selected}`);
     Office.context.roamingSettings.set(SELECTED_ROOM_SETTING, roomData);
   };
+}
+
+// old version
+/*
+export const DetailedRoomButton: React.Component<IRoomButtonProps, IRoomButtonState> = (props) => {
+  const roomPersona: IRoomInfoProps = {
+    showUnknownPersonaCoin: true,
+    text: props.roomInfo.roomBuildingAndNumber,
+    showSecondaryText: true,
+    roomId: props.roomInfo.roomId,
+    available: (true === props.roomInfo.available),
+    capacity: props.roomInfo.capacity,
+  };
+
+  return (
+    // checked={roomPersona.selected}
+    <CompoundButton checked={roomPersona.selected} allowDisabledFocus onClick={() => _selectRoom(roomPersona) } style={{
+                  paddingBottom: '9px', paddingTop: '9px', height: 'auto', width: '100%',
+                  borderStyle: 'none', alignItems: 'start', textAlign: 'left', maxWidth: '500px'
+                  }}>
+      <Persona {...roomPersona} size={PersonaSize.size32} presence={PersonaPresence.none}
+          onRenderSecondaryText={_onRenderSecondaryText}
+          onRenderInitials ={_onRenderInitials}
+          style={{
+
+          }}
+          />
+    </CompoundButton>
+  );
 };
+*/
 
