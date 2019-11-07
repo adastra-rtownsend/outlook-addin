@@ -1,13 +1,6 @@
 import * as React from 'react';
-import { IPersonaSharedProps } from 'office-ui-fabric-react/lib/Persona';
 import { CompoundButton, IButtonProps } from 'office-ui-fabric-react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
-
-export interface IRoomInfoProps extends IPersonaSharedProps {
-  roomId: string;
-  available: boolean;
-  capacity?: number;
-}
 
 // note: this should match to server definition
 export interface ISourceRoomInfo {
@@ -34,22 +27,6 @@ export class DetailedRoomButton extends React.Component<IRoomButtonProps, IRoomB
     this.state = {
       selected: false,
     }
-  }
-
-  /*
-  compoundButtonProps: IButtonProps = {
-    available: (true === this.props.roomInfo.available),
-    capacity: this.props.roomInfo.capacity,
-  }
-  */
-
-  roomPersona: IRoomInfoProps = {
-    showUnknownPersonaCoin: true,
-    text: this.props.roomInfo.roomBuildingAndNumber,
-    showSecondaryText: true,
-    roomId: this.props.roomInfo.roomId,
-    available: (true === this.props.roomInfo.available),
-    capacity: this.props.roomInfo.capacity,
   }
 
   public render() {
@@ -111,38 +88,4 @@ export class DetailedRoomButton extends React.Component<IRoomButtonProps, IRoomB
       </div>
     );
   }
-
-  _onRenderInitials(): JSX.Element {
-    return (
-      <Icon iconName="Room"/>
-    );
-  };
-
-  _onRenderSecondaryText(props: IRoomInfoProps): JSX.Element {
-
-    let clockIcon = 'Clock';
-    let text = 'Available';
-    let style = 'available-text';
-
-    if (props.available === false) {
-      clockIcon = 'CircleStopSolid';
-      text = 'Unavailable';
-      style = 'unavailable-text';
-    }
-
-    return (
-      <div>
-        <span className={style}>
-          <Icon iconName={clockIcon} styles={{ root: { marginRight: 5 } }} />
-          {text}
-        </span>
-        { props.capacity &&
-          <span>
-            <Icon iconName="Contact" styles={{ root: { marginRight: 5 } }} />
-            <span>{props.capacity}</span>
-          </span>
-        }
-      </div>
-    );
-  };
 }

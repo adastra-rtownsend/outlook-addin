@@ -97,7 +97,7 @@ export default class RoomList extends React.Component<IRoomListProps, IRoomListS
     if (this.state.selectedItem === null) { // no currently selected item
       this.setState({ selectedItem: clickedItem });
       clickedItem.setState({ selected: !clickedItem.state.selected });
-      this._selectRoom(clickedItem.roomPersona);
+      this._selectRoom(clickedItem.props.roomInfo);
     } else if (clickedItem === this.state.selectedItem) { // unselect selected item
       this.setState({ selectedItem: null });
       clickedItem.setState({ selected: !clickedItem.state.selected });
@@ -106,12 +106,12 @@ export default class RoomList extends React.Component<IRoomListProps, IRoomListS
       this.state.selectedItem.setState({ selected: false });
       this.setState({ selectedItem: clickedItem });
       clickedItem.setState({ selected: !clickedItem.state.selected });
-      this._selectRoom(clickedItem.roomPersona);
+      this._selectRoom(clickedItem.props.roomInfo);
     }
   }
 
-  _selectRoom(roomData): void {
-    Office.context.roamingSettings.set(SELECTED_ROOM_SETTING, roomData);
+  _selectRoom(roomInfo): void {
+    Office.context.roamingSettings.set(SELECTED_ROOM_SETTING, roomInfo);
     console.log(`selected room. SELECTED_ROOM_SETTING = ${JSON.stringify(Office.context.roamingSettings.get(SELECTED_ROOM_SETTING), null, 2)}`);
   };
 

@@ -22,7 +22,7 @@ export interface IRoomFinderProps {
   apiBasePath: string;
 }
 
-export interface IRoomFinderState { 
+export interface IRoomFinderState {
   isLoading: boolean;
   isBooking: boolean;
   hasError: boolean;
@@ -39,7 +39,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     this.state = {
       isLoading: false,
       isBooking: false,
-      hasError: false, 
+      hasError: false,
       startTime: null,
       endTime: null,
       showUnavailable: false,
@@ -50,8 +50,8 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
 
   onInterval() {
     this.refreshRoomInfo(false);
-  }  
-  
+  }
+
   componentDidMount() {
     setInterval(this.onInterval.bind(this), 2000);
     this.refreshRoomInfo(true);
@@ -71,21 +71,21 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
   }
 
   loadRoomsFromExampleData = async () => {
-    var that = this; 
+    var that = this;
     that.setState({isLoading: true});
 
     // induce an artificial 2 second delay
-    setTimeout(function() { 
+    setTimeout(function() {
       that.setState({
         ...that.state,
         roomData: createListItems(5000),
         isLoading: false,
       });
-    }, 2000) 
+    }, 2000)
   }
 
   retrieveRoomsFromServer = async (startTime, endTime) => {
-    var that = this; 
+    var that = this;
     that.setState({isLoading: true});
     var url = `${this.props.apiBasePath}/spaces/rooms/availability?start=${startTime}&end=${endTime}`;
     try {
@@ -102,7 +102,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
   }
 
   refreshRoomInfo = async (force) => {
-    var that = this; 
+    var that = this;
     var item = Office.context.mailbox.item;
     Promise.all([that.makePromise(item.start), that.makePromise(item.end)])
       .then(function(values) {
@@ -142,54 +142,54 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     });
   }
 
-  bookRoomFromExampleData = async (roomData) => {
-    var that = this; 
+  bookRoomFromExampleData = async (roomInfo) => {
+    var that = this;
     that.setState({isBooking: true});
 
     // induce an artificial 4 second delay
-    setTimeout(function() { 
+    setTimeout(function() {
       that.setState({
         ...that.state,
         isBooking: false,
-        hasError: false, 
+        hasError: false,
       });
-      that.addRoomToMeeting(roomData.text);
-    }, 4000) 
+      that.addRoomToMeeting(roomInfo.roomBuildingAndNumber);
+    }, 4000)
   }
 
-  bookRoomOnServer = async (roomData, startTime, endTime) => {
-    var that = this; 
+  bookRoomOnServer = async (roomInfo, startTime, endTime) => {
+    var that = this;
     this.setState({isBooking: true});
-    var url = `${this.props.apiBasePath}/spaces/rooms/${roomData.roomId}/reservation/?start=${startTime}&end=${endTime}`;
+    var url = `${this.props.apiBasePath}/spaces/rooms/${roomInfo.roomId}/reservation/?start=${startTime}&end=${endTime}`;
     try {
       await axios.get(url);
       that.setState({
         ...that.state,
         isBooking: false,
-        hasError: false, 
+        hasError: false,
       });
-      that.addRoomToMeeting(roomData.text);
+      that.addRoomToMeeting(roomInfo.roomBuildingAndNumber);
     } catch (error) {
       that.setState({isBooking: false});
       this.setState({hasError: true});
       console.log(error);
       // temporarily still add room (so demo doesn't suck)
-      that.addRoomToMeeting(roomData.text);
+      that.addRoomToMeeting(roomInfo.roomBuildingAndNumber);
 
     }
   }
 
   onBookRoom = async () => {
-    let roomData = Office.context.roamingSettings.get(SELECTED_ROOM_SETTING);
-    if (roomData && roomData.text) {
+    let roomInfo = Office.context.roamingSettings.get(SELECTED_ROOM_SETTING);
+    if (roomInfo && roomInfo.roomBuildingAndNumber) {
       var startTime = encodeURIComponent(moment(this.state.startTime).format('YYYY-MM-DDTHH:mm:ss'));
       var endTime = encodeURIComponent(moment(this.state.endTime).format('YYYY-MM-DDTHH:mm:ss'));
 
       if (this.props.useSampleData) {
-        this.bookRoomFromExampleData(roomData);
+        this.bookRoomFromExampleData(roomInfo);
       } else {
         // avaiability is reandomized, so not utilizing startTime and endTime params
-        this.bookRoomOnServer(roomData, startTime, endTime);
+        this.bookRoomOnServer(roomInfo, startTime, endTime);
       }
     }
   };
@@ -218,12 +218,12 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
       <div>
         <div style={{ paddingLeft: '16px', paddingRight: '16px', paddingBottom: '10px', borderBottomWidth: '1px',
                       borderColor: 'rgba(237, 235, 233, 1)', borderBottomStyle: 'solid'}}
-                      onContextMenu={(e) => { 
+                      onContextMenu={(e) => {
                         this.state.settingsDialog.current.showDialog();
                         e.preventDefault();
-                      }}                
-        >        
-          <SettingsDialog ref={this.state.settingsDialog} />       
+                      }}
+        >
+          <SettingsDialog ref={this.state.settingsDialog} />
           <div className="ms-SearchBoxExample" style={{borderColor: 'rgba(237, 235, 233, 1)'}}>
             <SearchBox
               placeholder="Search by Ad Astra room name"
@@ -233,7 +233,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
               onChange={() => console.log('onChange called')}
             />
           </div>
-          <div style={{ marginTop: '13px', marginBottom: '5px' }} > 
+          <div style={{ marginTop: '13px', marginBottom: '5px' }} >
               <Toggle
                 defaultChecked={!this.state.showUnavailable}
                 label="Only available rooms"
@@ -245,15 +245,15 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
           </div>
         </div>
         <RoomList items={this.state.roomData} showUnavailable={this.state.showUnavailable} />
-        { !this.state.hasError && 
+        { !this.state.hasError &&
           <PrimaryButton className='book-room-button' buttonType={ButtonType.hero} onClick={this.onBookRoom} text="Book Room"/>
         }
-        { this.state.hasError && 
-          <MessageBar className='success-message-bar' messageBarType={MessageBarType.success} 
+        { this.state.hasError &&
+          <MessageBar className='success-message-bar' messageBarType={MessageBarType.success}
           onDismiss={this.dismissError} isMultiline={false} dismissButtonAriaLabel="Close">
             Successfully booked room in Astra Schedule
         </MessageBar>
-      }    
+      }
       </div>
 );
   }
