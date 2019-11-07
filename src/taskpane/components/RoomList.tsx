@@ -10,6 +10,7 @@ export interface IRoomListProps {
 }
 
 export interface IRoomListState {
+  selectedItem: DetailedRoomButton;
 }
 
 const evenItemHeight = 25;
@@ -42,6 +43,7 @@ export default class RoomList extends React.Component<IRoomListProps, IRoomListS
     super(props);
 
     this.state = {
+      selectedItem: null, // no initial selected item
     };
   }
 
@@ -85,8 +87,25 @@ export default class RoomList extends React.Component<IRoomListProps, IRoomListS
   private _onRenderCell = (item: ISourceRoomInfo): JSX.Element => {
     return (
       <div data-is-focusable={true} className={classNames.itemCell}>
-        <DetailedRoomButton roomInfo={item} />
+        <DetailedRoomButton roomInfo={item} onClickFn={this.onClickItem}/>
       </div>
     );
   };
+
+  private onClickItem = (clickedItem: DetailedRoomButton) => {
+    console.log('item clicked!');
+    if (clickedItem === this.state.selectedItem) {
+      this.setState({ selectedItem: null });
+      clickedItem.setState({ selected: !clickedItem.state.selected });
+    } else if (this.state.selectedItem === null) {
+      this.setState({ selectedItem: clickedItem });
+      clickedItem.setState({ selected: !clickedItem.state.selected });
+    } else {
+      this.state.selectedItem.setState({ selected: false });
+      this.setState({ selectedItem: clickedItem });
+      clickedItem.setState({ selected: !clickedItem.state.selected });
+    }
+
+    //clickedItem.state.selected = !clickedItem.state.selected;
+  }
 }
