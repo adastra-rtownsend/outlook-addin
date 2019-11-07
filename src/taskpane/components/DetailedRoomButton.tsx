@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { IPersonaSharedProps, Persona, PersonaSize, PersonaPresence } from 'office-ui-fabric-react/lib/Persona';
-import { ActionButton } from 'office-ui-fabric-react';
+import { CompoundButton } from 'office-ui-fabric-react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { SELECTED_ROOM_SETTING } from '../../utilities/config';
 
 export interface IRoomInfoProps extends IPersonaSharedProps {
   roomId: string;
-  available: boolean; 
+  available: boolean;
   capacity?: number;
+  selected: boolean;
 }
 
 // note: this should match to server definition
@@ -31,15 +32,23 @@ export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
     roomId: props.roomInfo.roomId,
     available: (true === props.roomInfo.available),
     capacity: props.roomInfo.capacity,
+    selected: false,
   };
-  
+
   return (
-    <ActionButton allowDisabledFocus onClick={() => _selectRoom(roomPersona)} style={{ paddingLeft: '16px', paddingRight: '16px', 
-                  paddingBottom: '9px', paddingTop: '9px', height: 'auto'}}>
-      <Persona {...roomPersona} size={PersonaSize.size32} presence={PersonaPresence.none} 
+    // checked={roomPersona.selected}
+    <CompoundButton checked={roomPersona.selected} allowDisabledFocus onClick={() => _selectRoom(roomPersona) } style={{
+                  paddingBottom: '9px', paddingTop: '9px', height: 'auto', width: '100%',
+                  borderStyle: 'none', alignItems: 'start', textAlign: 'left', maxWidth: '500px'
+                  }}>
+      <Persona {...roomPersona} size={PersonaSize.size32} presence={PersonaPresence.none}
           onRenderSecondaryText={_onRenderSecondaryText}
-          onRenderInitials ={_onRenderInitials} />
-    </ActionButton>
+          onRenderInitials ={_onRenderInitials}
+          style={{
+
+          }}
+          />
+    </CompoundButton>
   );
 
   function _onRenderInitials(): JSX.Element {
@@ -66,17 +75,21 @@ export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
           <Icon iconName={clockIcon} styles={{ root: { marginRight: 5 } }} />
           {text}
         </span>
-        { props.capacity && 
+        { props.capacity &&
           <span>
             <Icon iconName="Contact" styles={{ root: { marginRight: 5 } }} />
-            <span>{props.capacity}</span> 
+            <span>{props.capacity}</span>
           </span>
-        }          
+        }
       </div>
     );
-  }; 
+  };
 
-  function _selectRoom(roomData): void {  
+  function _selectRoom(roomData): void {
+    console.log(JSON.stringify(roomData, null, 2));
+    const was = roomData.selected;
+    roomData.selected = was ? false : true;
+    //console.log(`inside _selectRoom. roomData.selected was=${was} now=${!roomData.selected}`);
     Office.context.roamingSettings.set(SELECTED_ROOM_SETTING, roomData);
   };
 };
