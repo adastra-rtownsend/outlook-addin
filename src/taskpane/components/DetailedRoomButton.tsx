@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { IPersonaSharedProps, Persona, PersonaSize, PersonaPresence } from 'office-ui-fabric-react/lib/Persona';
-import { CompoundButton } from 'office-ui-fabric-react';
+import { IPersonaSharedProps } from 'office-ui-fabric-react/lib/Persona';
+import { CompoundButton, IButtonProps } from 'office-ui-fabric-react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
-import { SELECTED_ROOM_SETTING } from '../../utilities/config';
 
 export interface IRoomInfoProps extends IPersonaSharedProps {
   roomId: string;
@@ -19,7 +18,7 @@ export interface ISourceRoomInfo {
   capacity?: number;
 }
 
-export interface IRoomButtonProps {
+export interface IRoomButtonProps extends IButtonProps {
   roomInfo: ISourceRoomInfo;
   onClickFn: Function;
 }
@@ -37,6 +36,13 @@ export class DetailedRoomButton extends React.Component<IRoomButtonProps, IRoomB
     }
   }
 
+  /*
+  compoundButtonProps: IButtonProps = {
+    available: (true === this.props.roomInfo.available),
+    capacity: this.props.roomInfo.capacity,
+  }
+  */
+
   roomPersona: IRoomInfoProps = {
     showUnknownPersonaCoin: true,
     text: this.props.roomInfo.roomBuildingAndNumber,
@@ -48,18 +54,61 @@ export class DetailedRoomButton extends React.Component<IRoomButtonProps, IRoomB
 
   public render() {
     return (
-      <CompoundButton checked={this.state.selected} allowDisabledFocus onClick={() => this.props.onClickFn(this) } style={{
-                    paddingBottom: '9px', paddingTop: '9px', height: 'auto', width: '100%',
-                    borderStyle: 'none', alignItems: 'start', textAlign: 'left', maxWidth: '500px'
-                    }}>
-        <Persona {...this.roomPersona} size={PersonaSize.size32} presence={PersonaPresence.none}
-            onRenderSecondaryText={this._onRenderSecondaryText}
-            onRenderInitials ={this._onRenderInitials}
-            style={{
-
-            }}
-            />
+      // alignItems: 'start', textAlign: 'left', justifyContent: 'left'
+      <CompoundButton
+        {...this.props}
+        checked={this.state.selected}
+        allowDisabledFocus
+        onClick={() => this.props.onClickFn(this) }
+        text={this.props.roomInfo.roomBuildingAndNumber}
+        onRenderDescription={this._onRenderDescription}
+        iconProps={{
+          iconName: 'Room',
+          style: {
+            color: 'white',
+            backgroundColor: '#0078d7',
+            borderRadius: '50%',
+            fontSize: 'medium',
+            padding: '5px'
+          }
+        }}
+        style={{
+          paddingBottom: '9px',
+          paddingTop: '9px',
+          height: 'auto',
+          width: '100%',
+          borderStyle: 'none',
+          maxWidth: '500px',
+        }}
+      >
       </CompoundButton>
+    );
+  }
+
+  _onRenderDescription(props: IRoomButtonProps): JSX.Element {
+    let clockIcon = 'Clock';
+    let text = 'Available';
+    let style = 'available-text';
+
+    if (props.roomInfo.available === false) {
+      clockIcon = 'CircleStopSolid';
+      text = 'Unavailable';
+      style = 'unavailable-text';
+    }
+
+    return (
+      <div>
+        <span className={style}>
+          <Icon iconName={clockIcon} styles={{ root: { marginRight: 5 } }} />
+          {text}
+        </span>
+        { props.roomInfo.capacity &&
+          <span>
+            <Icon iconName="Contact" styles={{ root: { marginRight: 5 } }} />
+            <span>{props.roomInfo.capacity}</span>
+          </span>
+        }
+      </div>
     );
   }
 
@@ -95,9 +144,5 @@ export class DetailedRoomButton extends React.Component<IRoomButtonProps, IRoomB
         }
       </div>
     );
-  };
-
-  _selectRoom(roomData): void {
-    Office.context.roamingSettings.set(SELECTED_ROOM_SETTING, roomData);
   };
 }
