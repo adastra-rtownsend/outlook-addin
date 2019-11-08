@@ -1,49 +1,73 @@
 import * as React from 'react';
-import { IPersonaSharedProps, Persona, PersonaSize, PersonaPresence } from 'office-ui-fabric-react/lib/Persona';
-import { ActionButton } from 'office-ui-fabric-react';
+import { CompoundButton, IButtonProps } from 'office-ui-fabric-react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
-import { IExampleItem } from '../../utilities/exampleData';
 
-export interface IRoomInfoProps extends IPersonaSharedProps {
-  available: boolean, 
-  capacity: number
+// note: this should match to server definition
+export interface ISourceRoomInfo {
+  roomId: string;
+  roomBuildingAndNumber: string;
+  whyIsRoomIdHereTwice: string;
+  available: boolean;
+  capacity?: number;
 }
 
-interface IRoomButtonProps {
-  roomInfo: IExampleItem,
- }
+export interface IRoomButtonProps extends IButtonProps {
+  roomInfo: ISourceRoomInfo;
+  onClickFn: Function;
+}
 
-export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
-  const roomPersona: IRoomInfoProps = {
-    showUnknownPersonaCoin: true,
-    text: props.roomInfo.roomName,
-    showSecondaryText: true,
-    available: (true === props.roomInfo.available),
-    capacity: props.roomInfo.capacity,
-  };
-  
-  return (
-    <ActionButton allowDisabledFocus onClick={() => _addLocation(roomPersona.text)} style={{ paddingLeft: '16px', paddingRight: '16px', 
-                  paddingBottom: '9px', paddingTop: '9px', height: 'auto'}}>
-      <Persona {...roomPersona} size={PersonaSize.size32} presence={PersonaPresence.none} 
-          onRenderSecondaryText={_onRenderSecondaryText}
-          onRenderInitials ={_onRenderInitials} />
-    </ActionButton>
-  );
+export interface IRoomButtonState {
+  selected: boolean;
+}
 
-  function _onRenderInitials(): JSX.Element {
+export class DetailedRoomButton extends React.Component<IRoomButtonProps, IRoomButtonState> {
+  constructor(props: IRoomButtonProps) {
+    super(props);
+
+    this.state = {
+      selected: false,
+    }
+  }
+
+  public render() {
     return (
-      <Icon iconName="Room"/>
+      // alignItems: 'start', textAlign: 'left', justifyContent: 'left'
+      <CompoundButton
+        {...this.props}
+        checked={this.state.selected}
+        allowDisabledFocus
+        onClick={() => this.props.onClickFn(this) }
+        text={this.props.roomInfo.roomBuildingAndNumber}
+        onRenderDescription={this._onRenderDescription}
+        iconProps={{
+          iconName: 'Room',
+          style: {
+            color: 'white',
+            backgroundColor: '#0078d7',
+            borderRadius: '50%',
+            fontSize: 'medium',
+            padding: '5px'
+          }
+        }}
+        style={{
+          paddingBottom: '9px',
+          paddingTop: '9px',
+          height: 'auto',
+          width: '100%',
+          borderStyle: 'none',
+          maxWidth: '500px',
+        }}
+      >
+      </CompoundButton>
     );
-  };
+  }
 
-  function _onRenderSecondaryText(props: IRoomInfoProps): JSX.Element {
-
+  _onRenderDescription(props: IRoomButtonProps): JSX.Element {
     let clockIcon = 'Clock';
     let text = 'Available';
     let style = 'available-text';
 
-    if (props.available === false) {
+    if (props.roomInfo.available === false) {
       clockIcon = 'CircleStopSolid';
       text = 'Unavailable';
       style = 'unavailable-text';
@@ -55,21 +79,13 @@ export const DetailedRoomButton: React.SFC<IRoomButtonProps> = (props) => {
           <Icon iconName={clockIcon} styles={{ root: { marginRight: 5 } }} />
           {text}
         </span>
-        <span>
-          <Icon iconName="Contact" styles={{ root: { marginRight: 5 } }} />
-          <span>{props.capacity}</span> 
-        </span>
+        { props.roomInfo.capacity &&
+          <span>
+            <Icon iconName="Contact" styles={{ root: { marginRight: 5 } }} />
+            <span>{props.roomInfo.capacity}</span>
+          </span>
+        }
       </div>
     );
-  }; 
-};
-
-function _addLocation(roomName): void {  
-  Office.context.mailbox.item.location.setAsync(roomName, function (asyncResult) {
-    if (asyncResult.status == Office.AsyncResultStatus.Failed) {
-        console.log("Error written location in outlook : " + asyncResult.error.message);
-    } else {
-        console.log("Location written in outlook");
-    }
-  });
-};
+  }
+}

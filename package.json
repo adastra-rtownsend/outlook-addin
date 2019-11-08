@@ -21,12 +21,14 @@
     "start:web": "office-addin-debugging start manifest.xml web",
     "stop": "office-addin-debugging stop manifest.xml",
     "validate": "office-toolbox validate -m manifest.xml",
-    "watch": "webpack --mode development --watch"
+    "watch": "webpack --mode development --watch",
+    "deploy": "npm run build && npx surge dist astra-look.surge.sh"
   },
   "dependencies": {
     "axios": "^0.19.0",
     "core-js": "^3.1.4",
     "es6-promise": "^4.2.8",
+    "moment": "^2.24.0",
     "office-ui-fabric-react": "^7.10.0",
     "react": "^16.8.2",
     "react-dom": "^16.8.2"
