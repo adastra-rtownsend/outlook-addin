@@ -4,8 +4,6 @@ import Header from './Header';
 import HeroList, { HeroListItem } from './HeroList';
 import RoomFinder from './RoomFinder';
 import { WELCOME_SCREEN_SETTTING } from '../../utilities/config';
-import { DEMO_DATA_SETTING } from '../../utilities/config';
-import { API_PATH_SETTING } from '../../utilities/config';
 import { getDefaultSettings} from '../../utilities/config';
 
 export interface AppProps {
@@ -26,8 +24,8 @@ export default class App extends React.Component<AppProps, AppState> {
     this.state = {
       listItems: [],
       officeSettingsInitializationState: 0,
-      // can't set these accurately until isOfficeInitialized is true 
-      showIntro: true, 
+      // can't set these accurately until isOfficeInitialized is true
+      showIntro: true,
       useSampleData: false,
       apiBasePath: '',
     };
@@ -38,20 +36,20 @@ export default class App extends React.Component<AppProps, AppState> {
     const defaults = getDefaultSettings();
 
     let showWelcome = Office.context.roamingSettings.get(WELCOME_SCREEN_SETTTING);
-    let useDemoData = Office.context.roamingSettings.get(DEMO_DATA_SETTING);
-    let apiPath = Office.context.roamingSettings.get(API_PATH_SETTING);
-    let showIntro = true; 
+    let useDemoData = undefined; // no longer loading this from settings - it's problematic for updating customer's add-in seamlessly
+    let apiPath = undefined; // no longer loading this from settings - it's problematic for updating customer's add-in seamlessly
+    let showIntro = true;
 
     if (showWelcome === undefined) {
       showWelcome = defaults.showWelcomeScreen;
       console.log(`Welcome screen setting not set, initializing to ${showWelcome}`);
     }
-    
+
     if (useDemoData === undefined) {
       useDemoData = defaults.useSampleData;
       console.log(`Sample data setting not set, initializing to ${useDemoData}`);
     }
-    
+
     if (apiPath === undefined) {
       apiPath = defaults.apiBasePath;
       console.log(`API base path setting not set, initializing to ${apiPath}`);
@@ -68,18 +66,16 @@ export default class App extends React.Component<AppProps, AppState> {
 
     var that = this;
     Office.context.roamingSettings.set(WELCOME_SCREEN_SETTTING, showWelcome);
-    Office.context.roamingSettings.set(DEMO_DATA_SETTING, useDemoData);
-    Office.context.roamingSettings.set(API_PATH_SETTING, apiPath);
 
     this.setState({
       showIntro: showIntro,
       useSampleData: useDemoData,
       apiBasePath: apiPath,
-    }, () => { 
+    }, () => {
       // some changes may have occured, so sync the settings
       Office.context.roamingSettings.saveAsync(() => {
         that.setState({officeSettingsInitializationState: 2});
-      });  
+      });
     });
   }
 
@@ -102,7 +98,7 @@ export default class App extends React.Component<AppProps, AppState> {
     if (this.props.isOfficeInitialized && this.state.officeSettingsInitializationState === 0) {
       this.setState({officeSettingsInitializationState: 1});
       this._initializeOfficeSettings();
-    } 
+    }
   }
 
   click = async () => {
@@ -119,7 +115,7 @@ export default class App extends React.Component<AppProps, AppState> {
       </div>
     );
   }
-  
+
   render() {
 
     const {
@@ -130,13 +126,13 @@ export default class App extends React.Component<AppProps, AppState> {
       return (
         <div></div>
       );
-    } 
-    
+    }
+
     if (this.state.showIntro) {
       return this.renderIntro();
     } else {
       return (
-        <RoomFinder 
+        <RoomFinder
           useSampleData={this.state.useSampleData}
           apiBasePath={this.state.apiBasePath}
         >
