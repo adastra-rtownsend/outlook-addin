@@ -162,6 +162,8 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
     this.setState({isBooking: true});
     var url = `${this.props.apiBasePath}/spaces/rooms/${roomInfo.roomId}/reservation/?start=${startTime}&end=${endTime}`;
     try {
+      throw new Error('Not yet implemented');
+
       await axios.get(url);
       that.setState({
         ...that.state,
@@ -249,9 +251,9 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
           <PrimaryButton className='book-room-button' buttonType={ButtonType.hero} onClick={this.onBookRoom} text="Book Room"/>
         }
         { this.state.hasError &&
-          <MessageBar className='success-message-bar' messageBarType={MessageBarType.success}
+          <MessageBar className='error-message-bar' messageBarType={MessageBarType.error}
           onDismiss={this.dismissError} isMultiline={false} dismissButtonAriaLabel="Close">
-            Successfully booked room in Astra Schedule
+            This is where we'd book the room in Astra Schedule. We're still working on it!
         </MessageBar>
       }
       </div>
