@@ -1,7 +1,7 @@
 const _defaultSettings = {
   showWelcomeScreen: 2, // 1 = never, 2 = next time, 3 = always
-  useSampleData: true,
-  apiBasePath: 'https://lit-shelf-67655.herokuapp.com',
+  useSampleData: false,
+  apiBasePath: 'https://ache-bridge-api.herokuapp.com',
 }
 
 export const WELCOME_SCREEN_SETTTING = 'adastra.demo.showWelcomeScreen';
