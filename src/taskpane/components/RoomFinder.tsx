@@ -20,6 +20,7 @@ const stackStyles: IStackStyles = {
 export interface IRoomFinderProps {
   useSampleData: boolean;
   apiBasePath: string;
+  onBookRoomSuccessful: Function;
 }
 
 export interface IRoomFinderState {
@@ -160,17 +161,26 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
   bookRoomOnServer = async (roomInfo, startTime, endTime) => {
     var that = this;
     this.setState({isBooking: true});
-    var url = `${this.props.apiBasePath}/spaces/rooms/${roomInfo.roomId}/reservation/?start=${startTime}&end=${endTime}`;
+    console.log(`${startTime} - ${endTime}`);
+    //var url = `${this.props.apiBasePath}/spaces/rooms/${roomInfo.roomId}/reservation/?start=${startTime}&end=${endTime}`;
     try {
-      throw new Error('Not yet implemented');
+      //throw new Error('Not yet implemented');
 
+      /*
       await axios.get(url);
       that.setState({
         ...that.state,
         isBooking: false,
         hasError: false,
       });
+      */
       that.addRoomToMeeting(roomInfo.roomBuildingAndNumber);
+      this.props.onBookRoomSuccessful(
+        roomInfo.roomBuildingAndNumber,
+        moment(this.state.startTime).format('MM/DD/YYYY'),
+        moment(this.state.startTime).format('HH:mm'),
+        moment(this.state.endTime).format('HH:mm'),
+      ); // Call injected onBookRoomSuccessful callback
     } catch (error) {
       that.setState({isBooking: false});
       this.setState({hasError: true});
@@ -190,7 +200,6 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
       if (this.props.useSampleData) {
         this.bookRoomFromExampleData(roomInfo);
       } else {
-        // avaiability is reandomized, so not utilizing startTime and endTime params
         this.bookRoomOnServer(roomInfo, startTime, endTime);
       }
     }

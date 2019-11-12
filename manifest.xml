@@ -5,7 +5,7 @@
   xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
   xsi:type="MailApp">
   <Id>1b331226-fa69-4d42-b5a9-77c0de16e9f5</Id>
-  <Version>0.1.0.0</Version>
+  <Version>0.1.1.0</Version>
   <ProviderName>Ad Astra</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Ad Astra (Beta)"/>

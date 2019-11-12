@@ -2,6 +2,7 @@ import * as React from 'react';
 import { PrimaryButton, ButtonType } from 'office-ui-fabric-react';
 import Header from './Header';
 import HeroList, { HeroListItem } from './HeroList';
+import ConfirmationScreen from './ConfirmationScreen';
 import RoomFinder from './RoomFinder';
 import { WELCOME_SCREEN_SETTTING } from '../../utilities/config';
 import { getDefaultSettings} from '../../utilities/config';
@@ -12,8 +13,10 @@ export interface AppProps {
 
 export interface AppState {
   listItems: HeroListItem[];
+  bookedRoomDetails: HeroListItem[];
   officeSettingsInitializationState: number; // quick hack - 0: unstarted 1: inprogress 2: done
   showIntro: boolean;
+  showConfirmationScreen: boolean;
   useSampleData: boolean;
   apiBasePath: string;
 }
@@ -23,9 +26,11 @@ export default class App extends React.Component<AppProps, AppState> {
     super(props, context);
     this.state = {
       listItems: [],
+      bookedRoomDetails: [],
       officeSettingsInitializationState: 0,
       // can't set these accurately until isOfficeInitialized is true
       showIntro: true,
+      showConfirmationScreen: false,
       useSampleData: false,
       apiBasePath: '',
     };
@@ -116,6 +121,38 @@ export default class App extends React.Component<AppProps, AppState> {
     );
   }
 
+  renderConfirmationScreen() {
+    return (
+      <div className='ms-welcome' style={{ alignItems: 'center' }}>
+        <Header logo='assets/logo-filled.png' title='' message='Success!' />
+        <ConfirmationScreen
+          message='You booked the following room in Astra Schedule'
+          items={this.state.bookedRoomDetails}
+          />
+      </div>
+    );
+  }
+
+  onBookRoomSuccessful = (roomName, eventDay, eventStart, eventEnd) => {
+    this.setState({
+      showConfirmationScreen: true,
+      bookedRoomDetails: [
+        {
+          icon: 'Room',
+          primaryText: `${roomName}`
+        },
+        {
+          icon: 'EventDate',
+          primaryText: `${eventDay}`
+        },
+        {
+          icon: 'Clock',
+          primaryText: `${eventStart} to ${eventEnd}`
+        },
+      ]
+    });
+  }
+
   render() {
 
     const {
@@ -130,11 +167,14 @@ export default class App extends React.Component<AppProps, AppState> {
 
     if (this.state.showIntro) {
       return this.renderIntro();
+    } else if (this.state.showConfirmationScreen) {
+      return this.renderConfirmationScreen();
     } else {
       return (
         <RoomFinder
           useSampleData={this.state.useSampleData}
           apiBasePath={this.state.apiBasePath}
+          onBookRoomSuccessful={this.onBookRoomSuccessful}
         >
         </RoomFinder>
       );
