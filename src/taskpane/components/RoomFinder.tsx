@@ -177,7 +177,7 @@ export default class RoomFinder extends React.Component<IRoomFinderProps, IRoomF
       that.addRoomToMeeting(roomInfo.roomBuildingAndNumber);
       this.props.onBookRoomSuccessful(
         roomInfo.roomBuildingAndNumber,
-        moment(this.state.startTime).format('MM/DD/YYYY'),
+        moment(this.state.startTime).format('dddd, MMMM Do YYYY'),
         moment(this.state.startTime).format('LT'),
         moment(this.state.endTime).format('LT'),
       ); // Call injected onBookRoomSuccessful callback
