@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" 
-  xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0" 
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+  xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
   xsi:type="MailApp">
-  <Id>05c2e1c9-3e1d-406e-9a91-e9ac64854143</Id>
-  <Version>0.1.0.0</Version>
+  <Id>1b331226-fa69-4d42-b5a9-77c0de16e9f5</Id>
+  <Version>0.1.1.0</Version>
   <ProviderName>Ad Astra</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Ad Astra"/>
+  <DisplayName DefaultValue="Ad Astra (Beta)"/>
   <Description DefaultValue="Find and book available rooms in Ad Astra"/>
   <IconUrl DefaultValue="https://aais-public-brand-assets.s3.amazonaws.com/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://aais-public-brand-assets.s3.amazonaws.com/icon-80.png"/>
@@ -28,7 +28,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://astra-look.surge.sh/taskpane.html"/>
+        <SourceLocation DefaultValue="https://astra-ache.surge.sh/taskpane.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -79,7 +79,7 @@
         <bt:Image id="Icon.80x80" DefaultValue="https://aais-public-brand-assets.s3.amazonaws.com/icon-80.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://astra-look.surge.sh/taskpane.html" />
+        <bt:Url id="Taskpane.Url" DefaultValue="https://astra-ache.surge.sh/taskpane.html" />
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Ad Astra Add-in"/>

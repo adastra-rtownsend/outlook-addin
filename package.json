@@ -17,12 +17,17 @@
     "build-dev": "webpack --mode development --https false && echo . && echo . && echo . && echo Please use 'build:dev' instead of 'build-dev'.",
     "dev-server": "webpack-dev-server --mode development",
     "start": "office-addin-debugging start manifest.xml",
+    "start:alpha": "office-addin-debugging start manifest-alpha.xml",
+    "start:localhost": "office-addin-debugging start manifest-debug.xml",
     "start:desktop": "office-addin-debugging start manifest.xml desktop",
     "start:web": "office-addin-debugging start manifest.xml web",
     "stop": "office-addin-debugging stop manifest.xml",
+    "stop:localhost": "office-addin-debugging stop manifest-debug.xml",
+    "stop:alpha": "office-addin-debugging stop manifest-alpha.xml",
     "validate": "office-toolbox validate -m manifest.xml",
     "watch": "webpack --mode development --watch",
-    "deploy": "npm run build && npx surge dist astra-look.surge.sh"
+    "deploy": "npm run build && npx surge dist astra-ache.surge.sh",
+    "deploy:alpha": "npm run build && npx surge dist astra-ache-alpha.surge.sh"
   },
   "dependencies": {
     "axios": "^0.19.0",
