@@ -28,7 +28,7 @@
     "axios": "^0.19.0",
     "core-js": "^3.1.4",
     "es6-promise": "^4.2.8",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "office-ui-fabric-react": "^7.10.0",
     "react": "^16.8.2",
     "react-dom": "^16.8.2"
